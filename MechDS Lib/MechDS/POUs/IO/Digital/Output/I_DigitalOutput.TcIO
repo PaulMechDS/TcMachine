@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <Itf Name="I_DigitalOutput" Id="{ea940b0b-a783-4bca-9f28-b77b52f62c35}">
+    <Declaration><![CDATA[INTERFACE I_DigitalOutput
+]]></Declaration>
+    <Property Name="OverrideEnable" Id="{8c7311e5-0183-4a83-b0f7-b3f0ad59be12}">
+      <Declaration><![CDATA[PROPERTY OverrideEnable : bool]]></Declaration>
+      <Get Name="Get" Id="{1235b539-2aec-4e54-95d5-4970f48888fd}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{ec7ac619-8f78-42d6-889e-c79718cfba04}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="OverrideValue" Id="{0deac0c4-1e24-45a7-8d8b-6322e0f70422}">
+      <Declaration><![CDATA[PROPERTY OverrideValue : bool]]></Declaration>
+      <Get Name="Get" Id="{ba2a570d-b93c-43ab-b4d4-ed4cb1894ca3}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{8c2cf186-c449-48c7-a6cc-3fa1bddc45d5}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Method Name="Run" Id="{d9c277e1-fb41-4088-bf64-db8231f6f93d}">
+      <Declaration><![CDATA[METHOD Run]]></Declaration>
+    </Method>
+    <Property Name="Value" Id="{31957a79-b34b-4468-abf2-6a167f6261a5}">
+      <Declaration><![CDATA[PROPERTY Value : bool]]></Declaration>
+      <Get Name="Get" Id="{e29589c9-e823-49b1-900a-75beab9e9fee}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

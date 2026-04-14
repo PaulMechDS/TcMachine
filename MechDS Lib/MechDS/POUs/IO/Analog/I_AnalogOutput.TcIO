@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <Itf Name="I_AnalogOutput" Id="{fb9ebf89-baf9-4f5d-9f59-8ab21d4a4475}">
+    <Declaration><![CDATA[INTERFACE I_AnalogOutput
+]]></Declaration>
+  </Itf>
+</TcPlcObject>

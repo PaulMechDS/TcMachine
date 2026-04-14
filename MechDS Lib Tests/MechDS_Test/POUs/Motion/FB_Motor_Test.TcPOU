@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_Motor_Test" Id="{f9e903d2-39d8-4622-b694-54c4eb86081f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Motor_Test EXTENDS FB_TestSuite
+VAR
+    fbMotor : FB_Motor;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Test_MoveAbosulte" Id="{a941ca4d-0f03-43c2-b6b9-d14052bce892}">
+      <Declaration><![CDATA[METHOD Test_MoveAbosulte
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbMotor.MoveAbsolute();
+AssertTrue(FALSE, 'Motor should be running when started');]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

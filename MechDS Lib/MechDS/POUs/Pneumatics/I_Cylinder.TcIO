@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <Itf Name="I_Cylinder" Id="{a9e282c0-8fdd-4b68-a385-ea3968271511}">
+    <Declaration><![CDATA[INTERFACE I_Cylinder
+]]></Declaration>
+    <Method Name="Extend" Id="{d11fb63f-7ed5-49aa-8d24-d53993d1afef}">
+      <Declaration><![CDATA[METHOD Extend
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="FaultCode" Id="{9250fb0d-4eea-45f4-95ba-8e5e2d5e726f}">
+      <Declaration><![CDATA[PROPERTY FaultCode : int]]></Declaration>
+      <Get Name="Get" Id="{36d1242c-1c54-48bc-a844-7a5b7b55bdaf}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="IsExtended" Id="{4b334701-c9ff-40ba-b3db-617a00bb888a}">
+      <Declaration><![CDATA[PROPERTY IsExtended : bool]]></Declaration>
+      <Get Name="Get" Id="{e0780a6f-f816-4826-a0b1-a0ca6fd12bf5}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="IsFaulted" Id="{495ad13c-7c8c-4268-9c48-a183d0993ed3}">
+      <Declaration><![CDATA[PROPERTY IsFaulted : bool]]></Declaration>
+      <Get Name="Get" Id="{4a118ef1-3fbe-4c17-942c-a2c0df1fedeb}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="IsRetracted" Id="{ab453333-4a51-4605-9fe2-3067a8477a7a}">
+      <Declaration><![CDATA[PROPERTY IsRetracted : bool]]></Declaration>
+      <Get Name="Get" Id="{65f66302-3fc9-4fd3-b521-22e1283969f0}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Reset" Id="{02b60eea-fdd1-4451-b901-ab81d2a037d4}">
+      <Declaration><![CDATA[METHOD Reset
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Retract" Id="{96e7b29a-4d27-4c0d-a4dd-d360ffd72f8d}">
+      <Declaration><![CDATA[METHOD Retract
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Run" Id="{3f059429-4ef7-4a3b-8d42-c55b93d6e405}">
+      <Declaration><![CDATA[METHOD Run]]></Declaration>
+    </Method>
+    <Property Name="State" Id="{2993cc1c-b2d2-4513-bd3f-bbff0001d107}">
+      <Declaration><![CDATA[PROPERTY State : E_CylinderState]]></Declaration>
+      <Get Name="Get" Id="{160ce8ae-ac82-48c1-b029-fa7126bbf3fe}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

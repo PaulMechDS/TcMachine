@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_DigitalOutput" Id="{20d7a993-bee3-49fb-a834-6412ab94a790}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DigitalOutput IMPLEMENTS I_DigitalOutput
+VAR
+	_overrideEnable : BOOL;
+	_overrideValue : BOOL;
+	_value : BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="OverrideEnable" Id="{47d7ff60-e835-4f24-975a-c1728a6c7565}">
+      <Declaration><![CDATA[PROPERTY OverrideEnable : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{9e525c42-3365-4cc7-848c-1fbacc999da6}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[OverrideEnable := _overrideEnable;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{dad7c668-56e3-4ba8-ad2c-6729c655d09e}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_overrideEnable := OverrideEnable;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="OverrideValue" Id="{3e5ac6a1-ab7f-4a45-8130-47526d7cb274}">
+      <Declaration><![CDATA[PROPERTY OverrideValue : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{4033c320-2d45-4758-9d78-55f77c4c4330}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[OverrideValue := _overrideValue;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{76cd7468-46ce-42ac-a872-84d89107a034}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_overrideValue := OverrideValue;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Method Name="Run" Id="{22c6521e-5bdf-44e1-8546-00727e9f2686}">
+      <Declaration><![CDATA[METHOD Run
+VAR_INPUT
+	bRawValue : BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _overrideEnable THEN
+	_value := _overrideValue;
+ELSE
+	_value := bRawValue;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Value" Id="{7dc50187-5a46-4612-9ae0-7828c177469d}">
+      <Declaration><![CDATA[PROPERTY Value : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{0f9b262d-4157-45c6-8d9a-eeca4e750c4e}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Value := _value;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

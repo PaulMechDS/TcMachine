@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <Itf Name="I_DigitalInput" Id="{3785921f-70bd-4d82-86ae-30e24dfe2130}">
+    <Declaration><![CDATA[INTERFACE I_DigitalInput]]></Declaration>
+    <Property Name="DebounceTime" Id="{e747ed6b-4202-4d18-9dee-36b1fb6f8502}">
+      <Declaration><![CDATA[PROPERTY DebounceTime : TIME]]></Declaration>
+      <Get Name="Get" Id="{ae74e868-eb46-4cc5-b497-32e626f6d89c}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{08f90871-0677-4949-ae98-dfc4addef2c6}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="FallingEdge" Id="{0b5d67c7-f090-4aa7-a6fa-e232aa729113}">
+      <Declaration><![CDATA[PROPERTY FallingEdge : Bool]]></Declaration>
+      <Get Name="Get" Id="{44310c21-2bf9-4d83-b000-20d14a96f8e8}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="Inverted" Id="{da04c4fe-0fe1-435d-bedb-6ce134fe3eec}">
+      <Declaration><![CDATA[PROPERTY Inverted : Bool]]></Declaration>
+      <Get Name="Get" Id="{2222ddb6-d1f6-4e9b-bbe1-a652d79b1894}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{f65be8e1-af19-49d6-969a-bf7f4d27b972}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="OverrideEnable" Id="{1a96286a-ab0b-4224-8ac3-b7ce2157331a}">
+      <Declaration><![CDATA[PROPERTY OverrideEnable : Bool]]></Declaration>
+      <Get Name="Get" Id="{f386cddc-25e1-4e6f-aec9-6ce9b4b5efc9}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{cbe18fd6-dca5-4317-8ada-e9579c0d44a4}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="OverrideValue" Id="{3558cb3d-fe25-4b89-9542-112ef31ad663}">
+      <Declaration><![CDATA[PROPERTY OverrideValue : Bool]]></Declaration>
+      <Get Name="Get" Id="{95c0cf32-94c0-4610-b75a-00803c865bea}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{87e4e094-7a0b-4c7f-a858-97b8849c77f4}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
+    <Property Name="RisingEdge" Id="{37d1806a-4bd5-4f38-b748-cece3c99061d}">
+      <Declaration><![CDATA[PROPERTY RisingEdge : Bool]]></Declaration>
+      <Get Name="Get" Id="{4ca048e2-2b95-4be8-bc2f-a99a6b2d2809}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Run" Id="{5a372980-996d-4b58-b4c5-9a3c730d4c5e}">
+      <Declaration><![CDATA[METHOD Run]]></Declaration>
+    </Method>
+    <Property Name="Value" Id="{ade53178-c8b7-4197-8a0c-61e6d8414350}">
+      <Declaration><![CDATA[PROPERTY Value : Bool]]></Declaration>
+      <Get Name="Get" Id="{b474d945-16f9-4392-813c-bee48c049978}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

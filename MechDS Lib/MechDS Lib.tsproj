@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4026.21">
+	<Project ProjectGUID="{4F6FACFD-80C8-47E8-94D1-E9710A822ECD}" Target64Bit="true" ShowHideConfigurations="#x6">
+		<System>
+			<Settings MaxCpus="64" NonWinCpus="63"/>
+		</System>
+		<Plc>
+			<Project GUID="{7729C4F5-35D3-4299-9A5B-269804E5FAAC}" Name="MechDS" PrjFilePath="MechDS\MechDS.plcproj" TmcFilePath="MechDS\MechDS.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{E37ADD7A-BBD1-5A3C-08F2-AB7C43CD83BD}" TmcPath="MechDS\MechDS.tmc">
+					<Name>MechDS Instance</Name>
+					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+				</Instance>
+			</Project>
+		</Plc>
+	</Project>
+</TcSmProject>

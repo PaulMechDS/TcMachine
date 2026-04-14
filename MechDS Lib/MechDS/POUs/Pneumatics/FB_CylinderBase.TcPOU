@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_CylinderBase" Id="{eb5ec553-b2e9-4217-b11c-eb9336ba6e3e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_CylinderBase IMPLEMENTS I_Cylinder
+VAR
+    _state              : E_CylinderState;
+    _faultCode          : E_CylinderFault;
+    _isFaulted          : BOOL;
+    _cmdExtend          : BOOL;
+    _cmdRetract         : BOOL;
+    _timerExtend        : TON;
+    _timerRetract       : TON;
+    _eSensorMode        : E_SensorMode;
+    _tExtendTimeout     : TIME;
+    _tRetractTimeout    : TIME;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="DriveOutputs" Id="{34a5fc44-fd1e-4b36-90cb-8f6551dce587}">
+      <Declaration><![CDATA[METHOD PROTECTED ABSTRACT DriveOutputs
+VAR_INPUT
+    bExtend  : BOOL;
+    bRetract : BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Extend" Id="{37f3de8a-83d5-4408-858d-e1f7e9ea2e02}">
+      <Declaration><![CDATA[METHOD Extend
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT _isFaulted THEN
+	_cmdExtend  := TRUE;
+	_cmdRetract := FALSE;
+	Extend();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="FaultCode" Id="{b603123d-8267-46d1-ae25-c8b1e082349b}">
+      <Declaration><![CDATA[PROPERTY FaultCode : INT
+]]></Declaration>
+      <Get Name="Get" Id="{3ea66213-f56a-4097-afc0-8ca5a2da7797}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[FaultCode := THIS^._faultCode;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="FB_Init" Id="{c1387a73-95ac-4452-8997-08027aa4f87d}">
+      <Declaration><![CDATA[//FB_Init is always available implicitly and it is used primarily for initialization.
+//The return value is not evaluated. For a specific influence, you can also declare the
+//methods explicitly and provide additional code there with the standard initialization
+//code. You can evaluate the return value.
+METHOD FB_Init: BOOL
+VAR_INPUT
+    bInitRetains: BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
+    bInCopyCode: BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)   
+    eSensorMode         : E_SensorMode;
+    tExtendTimeout      : TIME;
+    tRetractTimeout     : TIME;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_eSensorMode     := eSensorMode;
+_tExtendTimeout  := tExtendTimeout;
+_tRetractTimeout := tRetractTimeout;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="IsExtended" Id="{828e6971-a6e3-471e-bbc9-855d2099ac81}">
+      <Declaration><![CDATA[PROPERTY IsExtended : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{43568e47-3d78-407a-be6f-3030a56176ba}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IsExtended := (_state = E_CylinderState.EXTENDED);]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="IsFaulted" Id="{227dfaa8-75c6-442f-a225-e34dc2e58cdc}">
+      <Declaration><![CDATA[PROPERTY IsFaulted : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{2f644e86-df4f-4c38-bda2-425447fa237c}">
+        <Declaration><![CDATA[
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IsFaulted := _isFaulted;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="IsRetracted" Id="{5ce572c2-d1f0-4b30-a068-71d5ad41aa4f}">
+      <Declaration><![CDATA[PROPERTY IsRetracted : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{d267f02d-2be5-4a3b-b2c5-9f0f34eb2b97}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IsRetracted := (_state = E_CylinderState.RETRACTED);]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Reset" Id="{f9597cbe-fedf-4b8c-80ee-c59dd5e1c962}">
+      <Declaration><![CDATA[METHOD Reset
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_isFaulted  := FALSE;
+_faultCode  := E_CylinderFault.NONE;
+_cmdExtend  := FALSE;
+_cmdRetract := FALSE;
+_state      := E_CylinderState.IDLE;
+_timerExtend(IN  := FALSE, PT := _tExtendTimeout);
+_timerRetract(IN := FALSE, PT := _tRetractTimeout);
+Reset();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Retract" Id="{317b4c47-dc5c-4715-a73b-b065f4e46109}">
+      <Declaration><![CDATA[METHOD Retract
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT _isFaulted THEN
+	_cmdRetract := TRUE;
+	_cmdExtend  := FALSE;
+	Retract();
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Run" Id="{8397213b-184b-46c1-866e-888319e44605}">
+      <Declaration><![CDATA[METHOD Run
+VAR
+    bExtendDone     : BOOL;
+    bRetractDone    : BOOL;
+    bUseExtTimer    : BOOL;
+    bUseRetTimer    : BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Sensor conflict (only relevant when both sensors configured)
+IF _eSensorMode = E_SensorMode.BOTH	AND THIS^.SensorAtExtended() AND THIS^.SensorAtRetracted() THEN
+	THIS^.SetFault(E_CylinderFault.SENSOR_CONFLICT);
+END_IF
+
+IF _isFaulted THEN
+	THIS^.DriveOutputs(bExtend := FALSE, bRetract := FALSE);
+	_timerExtend(IN  := FALSE, PT := _tExtendTimeout);
+	_timerRetract(IN := FALSE, PT := _tRetractTimeout);
+	RETURN;
+END_IF
+
+// Determine if a sensor confirms position, or we fall through to timer
+bExtendDone  := THIS^.SensorAtExtended();
+bRetractDone := THIS^.SensorAtRetracted();
+
+// Timers are the fallback when no sensor covers that direction
+bUseExtTimer := (_eSensorMode = E_SensorMode.NONE
+				 OR _eSensorMode = E_SensorMode.RETRACT_ONLY);
+bUseRetTimer := (_eSensorMode = E_SensorMode.NONE
+				 OR _eSensorMode = E_SensorMode.EXTEND_ONLY);
+
+_timerExtend(IN  := (_state = E_CylinderState.EXTENDING),
+			 PT  := _tExtendTimeout);
+_timerRetract(IN := (_state = E_CylinderState.RETRACTING),
+			  PT := _tRetractTimeout);
+
+// Promote timer expiry to "done" when no sensor is covering that direction
+IF bUseExtTimer  AND _timerExtend.Q  THEN bExtendDone  := TRUE; END_IF
+IF bUseRetTimer  AND _timerRetract.Q THEN bRetractDone := TRUE; END_IF
+
+// Timeout fault — only fires when a sensor IS configured and move timed out
+IF NOT bUseExtTimer  AND _timerExtend.Q  THEN
+	THIS^.SetFault(E_CylinderFault.EXTEND_TIMEOUT);
+	RETURN;
+END_IF
+IF NOT bUseRetTimer  AND _timerRetract.Q THEN
+	THIS^.SetFault(E_CylinderFault.RETRACT_TIMEOUT);
+	RETURN;
+END_IF
+
+// --- State machine ---
+CASE _state OF
+
+	E_CylinderState.IDLE:
+		THIS^.DriveOutputs(bExtend := FALSE, bRetract := FALSE);
+		IF _cmdExtend  THEN _state := E_CylinderState.EXTENDING;  END_IF
+		IF _cmdRetract THEN _state := E_CylinderState.RETRACTING; END_IF
+
+	E_CylinderState.EXTENDING:
+		THIS^.DriveOutputs(bExtend := TRUE, bRetract := FALSE);
+		IF bExtendDone THEN
+			_state      := E_CylinderState.EXTENDED;
+			_cmdExtend  := FALSE;
+			_timerExtend(IN := FALSE, PT := _tExtendTimeout);
+		END_IF
+
+	E_CylinderState.EXTENDED:
+		THIS^.DriveOutputs(bExtend := TRUE, bRetract := FALSE);
+		IF _cmdRetract THEN _state := E_CylinderState.RETRACTING; END_IF
+
+	E_CylinderState.RETRACTING:
+		THIS^.DriveOutputs(bExtend := FALSE, bRetract := TRUE);
+		IF bRetractDone THEN
+			_state       := E_CylinderState.RETRACTED;
+			_cmdRetract  := FALSE;
+			_timerRetract(IN := FALSE, PT := _tRetractTimeout);
+		END_IF
+
+	E_CylinderState.RETRACTED:
+		THIS^.DriveOutputs(bExtend := FALSE, bRetract := FALSE);
+		IF _cmdExtend THEN _state := E_CylinderState.EXTENDING; END_IF
+
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SensorAtExtended" Id="{fd08394c-6a0e-4688-aa86-562628f2cc12}">
+      <Declaration><![CDATA[METHOD PROTECTED ABSTRACT SensorAtExtended  : BOOL]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SensorAtRetracted" Id="{1ffbd4cd-25ad-44ad-aa2e-2145cfff5dd8}">
+      <Declaration><![CDATA[METHOD PROTECTED ABSTRACT SensorAtRetracted : BOOL]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetFault" Id="{856d1e9e-5f63-478a-9390-ab8aaef7de03}">
+      <Declaration><![CDATA[METHOD PROTECTED SetFault
+VAR_INPUT
+    fault : E_CylinderFault;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_faultCode  := fault;
+_isFaulted  := TRUE;
+_state      := E_CylinderState.FAULTED;
+_cmdExtend  := FALSE;
+_cmdRetract := FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="State" Id="{3faa36b1-3281-4778-83cd-16b719cb5dcb}">
+      <Declaration><![CDATA[PROPERTY State : E_CylinderState
+]]></Declaration>
+      <Get Name="Get" Id="{0d4b5026-5d7c-4361-bd9d-3c65c357a1eb}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[State := THIS^._state;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

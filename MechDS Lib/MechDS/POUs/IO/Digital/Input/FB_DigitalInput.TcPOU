@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_DigitalInput" Id="{62bcf3eb-b150-4853-a571-3bc6a924fc70}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DigitalInput IMPLEMENTS I_DigitalInput
+VAR
+    _value : BOOL;
+    _overrideEnable : BOOL;
+    _overrideValue : BOOL;
+    _inverted : BOOL;
+    _tDebounce : TIME := T#10MS;
+    _timerDebounce : TON;
+    _bDebouncedVal : BOOL;
+	_bLastRaw : BOOL;
+    _rTrig : R_TRIG;
+    _fTrig : F_TRIG;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="DebounceTime" Id="{9381e871-a6da-4e40-855b-e6399cf5eb57}">
+      <Declaration><![CDATA[PROPERTY DebounceTime : TIME
+]]></Declaration>
+      <Get Name="Get" Id="{81e27506-25e5-4f67-a6d6-86482ce553f3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[DebounceTime := _tDebounce;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{393b2af4-a914-462c-961e-463d5df2123f}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_tDebounce := DebounceTime;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="FallingEdge" Id="{35be8a32-cd97-4e90-99c5-dd34e48a59bd}">
+      <Declaration><![CDATA[PROPERTY FallingEdge : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{85f146d6-223c-4bbc-94a0-2753f40e7b41}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[FallingEdge := _rTrig.Q;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="FB_Init" Id="{7cae908f-6b82-41d5-9197-480a404339c9}">
+      <Declaration><![CDATA[//FB_Init is always available implicitly and it is used primarily for initialization.
+//The return value is not evaluated. For a specific influence, you can also declare the
+//methods explicitly and provide additional code there with the standard initialization
+//code. You can evaluate the return value.
+METHOD FB_Init: BOOL
+VAR_INPUT
+    bInitRetains: BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
+    bInCopyCode: BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)   
+    tDebounce       : TIME;
+    bInverted       : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_tDebounce := tDebounce;
+_inverted := bInverted;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Inverted" Id="{56c32b0f-b38d-4daf-ad87-2dd3a9105aca}">
+      <Declaration><![CDATA[PROPERTY Inverted : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{c25de303-88ea-4bce-8e2e-de04608053d4}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Inverted := _inverted;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{59018184-0861-40cb-823d-7cf95552deac}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_inverted := Inverted;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="OverrideEnable" Id="{d212aec1-9560-4971-8769-4942c537a049}">
+      <Declaration><![CDATA[PROPERTY OverrideEnable : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{6df29c17-0cd7-456b-9b8f-c4281fda47d1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[OverrideEnable := _overrideEnable;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{bfff5d87-8342-4e67-a3d9-5617aa554d69}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_overrideEnable := OverrideEnable;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="OverrideValue" Id="{340b0a2b-9c47-4dad-b288-f2057d4db6e7}">
+      <Declaration><![CDATA[PROPERTY OverrideValue : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{e87bc2ea-238f-4cce-9f50-ebd5e3a3e530}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[OverrideValue := _overrideValue;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{06047c1e-bf46-4ac2-9894-761309fdf722}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ _overrideValue := OverrideValue;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="RisingEdge" Id="{cf113e80-6110-450a-8656-3e72decb6eb7}">
+      <Declaration><![CDATA[PROPERTY RisingEdge : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{130f7724-a5db-4e83-9c33-cf34a48c86ba}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[RisingEdge := _fTrig.Q;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Run" Id="{a9ece054-d8fc-422e-8693-2457f6756a83}">
+      <Declaration><![CDATA[METHOD Run
+VAR_INPUT
+	bRawInput : BOOL;
+END_VAR
+VAR
+    bProcessed : BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Debounce — timer resets if input changes before it elapses
+IF bRawInput <> _bLastRaw THEN
+	_timerDebounce(IN := FALSE, PT := _tDebounce);
+END_IF
+_timerDebounce(IN := TRUE, PT := _tDebounce);
+_bLastRaw := bRawInput;
+
+IF _timerDebounce.Q THEN
+	_bDebouncedVal := bRawInput;
+END_IF
+
+// Invert
+bProcessed := _bDebouncedVal XOR _inverted;
+
+// Override
+IF _overrideEnable THEN
+	_value := _overrideValue;
+ELSE
+	_value := bProcessed;
+END_IF
+
+_rTrig(CLK := _value);
+_fTrig(CLK := _value);]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Value" Id="{a252e364-4f72-4f71-8ec5-9f3aa223f332}">
+      <Declaration><![CDATA[PROPERTY Value : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{f5498cbb-cfd2-4f08-b9e6-1a27975e859d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Value := _value;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

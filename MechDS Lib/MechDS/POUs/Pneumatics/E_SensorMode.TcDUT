@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <DUT Name="E_SensorMode" Id="{be0e7124-cac6-43cd-b79e-08b0c7a642cd}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_SensorMode :
+(
+    NONE            := 0,   // Timed only — no position feedback
+    EXTEND_ONLY     := 1,   // One sensor, extended position
+    RETRACT_ONLY    := 2,   // One sensor, retracted position
+    BOTH            := 3    // Full feedback
+);
+END_TYPE]]></Declaration>
+  </DUT>
+</TcPlcObject>

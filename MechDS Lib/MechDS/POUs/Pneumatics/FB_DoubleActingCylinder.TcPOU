@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_DoubleActingCylinder" Id="{ffa4c2dd-b8d3-4a22-8853-bf1eeb590119}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DoubleActingCylinder EXTENDS FB_CylinderBase
+VAR
+    _iCylExtendedSwitch : I_DigitalInput;
+    _iCylRetractedSwitch : I_DigitalInput;
+    _iCylExtend : I_DigitalOutput;
+    _iCylRetract : I_DigitalOutput;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="DriveOutputs" Id="{20a34b91-9cc1-48ad-a184-9e6f0651f2fd}">
+      <Declaration><![CDATA[METHOD PROTECTED DriveOutputs
+VAR_INPUT
+    bExtend  : BOOL;
+    bRetract : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_iCylExtend.RawValue  := bExtend;
+_iCylRetract.RawValue := bRetract;
+_iCylExtend.Run();
+_iCylRetract.Run();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_Init" Id="{985d4540-2d82-49b1-9e64-1b501c31c996}">
+      <Declaration><![CDATA[(*FB_Init is always available implicitly and it is used primarily for initialization.
+The return value is not evaluated. For a specific influence, you can also declare the
+methods explicitly and provide additional code there with the standard initialization
+code. You can evaluate the return value.*)
+METHOD FB_Init : BOOL
+VAR_INPUT
+	(* TRUE: the retain variables are initialized (reset warm / reset cold)*)
+	bInitRetains	: BOOL;
+	(* TRUE: the instance will be copied to the copy code afterward (online change)   *)
+	bInCopyCode	: BOOL;
+    eSensorMode         : E_SensorMode;
+    tExtendTimeout      : TIME;
+    tRetractTimeout     : TIME;
+    iCylExtendedSwitch         : I_DigitalInput;
+    iCylRetractedSwitch        : I_DigitalInput;
+    iCylExtend          : I_DigitalOutput;
+    iCylRetract         : I_DigitalOutput;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_iCylExtendedSwitch  := iCylExtendedSwitch;
+_iCylRetractedSwitch := iCylRetractedSwitch;
+_iCylExtend   := iCylExtend;
+_iCylRetract  := iCylRetract;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Run" Id="{fefa9c14-5898-414e-9f29-a8ad8b35549e}">
+      <Declaration><![CDATA[METHOD Run
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_iCylExtendedSwitch.Run();
+_iCylRetractedSwitch.Run();
+SUPER^.Run();
+_iCylExtend.Run();
+_iCylRetract.Run();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SensorAtExtended" Id="{6fc96401-0297-4517-ba89-b6d3d4029ab2}">
+      <Declaration><![CDATA[METHOD PROTECTED SensorAtExtended : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE _eSensorMode OF
+	E_SensorMode.BOTH, E_SensorMode.EXTEND_ONLY:   
+		SensorAtExtended := _iCylExtendedSwitch.Value;
+	ELSE                        
+		SensorAtExtended := FALSE;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SensorAtRetracted" Id="{62136e7e-ced1-4d54-8350-f90bcda764d3}">
+      <Declaration><![CDATA[METHOD PROTECTED SensorAtRetracted : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE _eSensorMode OF
+	E_SensorMode.BOTH, E_SensorMode.RETRACT_ONLY:  
+		SensorAtRetracted := _iCylRetractedSwitch.Value;
+	ELSE                        
+		SensorAtRetracted := FALSE;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
