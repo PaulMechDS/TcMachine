@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_DigitalInput_Test" Id="{f9e903d2-39d8-4622-b694-54c4eb86081f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DigitalInput_Test EXTENDS FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_TrueInputGivesTrueOutput();
+Test_FalseInputGivesFalseOutput();
+Test_InvertedAndTrueInputGivesFalseOutput();
+Test_InvertedAndFalseInputGivesTrueOutput();]]></ST>
+    </Implementation>
+    <Method Name="Test_FalseInputGivesFalseOutput" Id="{8502fde9-6854-422a-85fb-fda903434dc4}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_FalseInputGivesFalseOutput
+VAR
+    fbDigitalInputSoftware : FB_DigitalInputSoftware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('FalseInputGivesFalseOutput');
+
+// @TEST-RUN ErrorMessage
+fbDigitalInputSoftware.SoftwareInput := FALSE;
+fbDigitalInputSoftware.Run();
+
+// @TEST-ASSERT ErrorMessage
+AssertFalse(fbDigitalInputSoftware.Value, 'Value of Input should be TRUE');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_InvertedAndFalseInputGivesTrueOutput" Id="{37b79115-d6d7-425e-a729-08f974511463}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_InvertedAndFalseInputGivesTrueOutput
+VAR
+    fbDigitalInputSoftware : FB_DigitalInputSoftware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := TRUE);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_InvertedAndFalseInputGivesTrueOutput');
+
+// @TEST-RUN ErrorMessage
+fbDigitalInputSoftware.SoftwareInput := FALSE;
+fbDigitalInputSoftware.Run();
+
+// @TEST-ASSERT ErrorMessage
+AssertTrue(fbDigitalInputSoftware.Value, 'Value of Input should be FALSE');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_InvertedAndTrueInputGivesFalseOutput" Id="{881a0544-fcb1-4801-877f-be1f7657166d}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_InvertedAndTrueInputGivesFalseOutput
+VAR
+    fbDigitalInputSoftware : FB_DigitalInputSoftware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := TRUE);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_InvertedAndTrueInputGivesFalseOutput');
+
+// @TEST-RUN ErrorMessage
+fbDigitalInputSoftware.SoftwareInput := TRUE;
+fbDigitalInputSoftware.Run();
+
+// @TEST-ASSERT ErrorMessage
+AssertFalse(fbDigitalInputSoftware.Value, 'Value of Input should be FALSE');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_TrueInputGivesTrueOutput" Id="{a941ca4d-0f03-43c2-b6b9-d14052bce892}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_TrueInputGivesTrueOutput
+VAR
+    fbDigitalInputSoftware : FB_DigitalInputSoftware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_TrueInputGivesTrueOutput');
+
+// @TEST-RUN ErrorMessage
+fbDigitalInputSoftware.SoftwareInput := TRUE;
+fbDigitalInputSoftware.Run();
+
+// @TEST-ASSERT ErrorMessage
+AssertTrue(fbDigitalInputSoftware.Value, 'Value of Input should be TRUE');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,20 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
-  <POU Name="FB_Motor_Test" Id="{f9e903d2-39d8-4622-b694-54c4eb86081f}" SpecialFunc="None">
+  <POU Name="FB_Motor_Test" Id="{8ab67313-a01d-4707-96f9-098bb567ff30}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Motor_Test EXTENDS FB_TestSuite
-VAR
-    fbMotor : FB_Motor;
-END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
+      <ST><![CDATA[Test_PowerOn();]]></ST>
     </Implementation>
-    <Method Name="Test_MoveAbosulte" Id="{a941ca4d-0f03-43c2-b6b9-d14052bce892}">
-      <Declaration><![CDATA[METHOD Test_MoveAbosulte
-]]></Declaration>
+    <Method Name="Test_PowerOn" Id="{123c075e-0b9b-49b9-86bd-e48c9ff342dc}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_PowerOn
+VAR
+    
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[fbMotor.MoveAbsolute();
-AssertTrue(FALSE, 'Motor should be running when started');]]></ST>
+        <ST><![CDATA[TEST('TBA');
+
+// @TEST-RUN ErrorMessage
+
+
+// @TEST-ASSERT ErrorMessage
+AssertTrue(FALSE, 'Value of Input should be true');
+ 
+TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
   </POU>

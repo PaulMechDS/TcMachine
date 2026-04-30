@@ -21,10 +21,19 @@
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\IO\FB_DigitalInput_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\IO\FB_DigitalOutput_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\MAIN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\Motion\FB_Motor_Test.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\Pneumatics\FB_DoubleActingCylinder_Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -32,6 +41,8 @@
     <Folder Include="DUTs" />
     <Folder Include="GVLs" />
     <Folder Include="POUs\Motion" />
+    <Folder Include="POUs\IO" />
+    <Folder Include="POUs\Pneumatics" />
     <Folder Include="VISUs" />
     <Folder Include="POUs" />
   </ItemGroup>
@@ -80,7 +91,12 @@
         <o>
           <v n="Name">"{246001F4-279D-43AC-B241-948EB31120E1}"</v>
           <d n="SubKeys" t="Hashtable" />
-          <d n="Values" t="Hashtable" />
+          <d n="Values" t="Hashtable" ckt="String" cvt="Boolean">
+            <v>GeneralPropertySupport</v>
+            <v>True</v>
+            <v>UnicodeStrings</v>
+            <v>False</v>
+          </d>
         </o>
         <v>{29BD8D0C-3586-4548-BB48-497B9A01693F}</v>
         <o>

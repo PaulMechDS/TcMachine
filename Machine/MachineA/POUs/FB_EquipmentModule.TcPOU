@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_EquipmentModule" Id="{38d16a8a-62f6-449d-b5b6-b3803c34719b}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_EquipmentModule
+VAR
+    DoubleActingCylinderExtendSensor : FB_DigitalInputHardware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
+    DoubleActingCylinderRetractSensor : FB_DigitalInputHardware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
+    DoubleActingCylinderExtendSolenoid : FB_DigitalOutputHardware;
+    DoubleActingCylinderRetractSolenoid : FB_DigitalOutputHardware;
+
+    CylinderDoubleActing : FB_DoubleActingCylinder(
+                iCylExtendedSwitch := DoubleActingCylinderExtendSensor,
+                iCylRetractedSwitch := DoubleActingCylinderRetractSensor,
+                iCylExtend := DoubleActingCylinderExtendSolenoid,
+                iCylRetract := DoubleActingCylinderRetractSolenoid,
+                eSensorMode := E_SensorMode.BOTH,
+                tExtendTimeout := T#3S,
+                tRetractTimeout := T#3S);
+
+    SingleActingCylinderExtendSensor : FB_DigitalInputHardware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
+    SingleActingCylinderRetractSensor : FB_DigitalInputHardware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
+    SingleActingCylinderExtendSolenoid : FB_DigitalOutputHardware;
+
+    CylinderSingleActing : FB_SingleActingCylinder(
+                iCylExtendedSwitch := SingleActingCylinderExtendSensor,
+                iCylRetractedSwitch := SingleActingCylinderRetractSensor,
+                iCylExtend := SingleActingCylinderExtendSolenoid,
+                eSensorMode := E_SensorMode.BOTH,
+                tExtendTimeout := T#3S,
+                tRetractTimeout := T#3S);
+
+    iCylinder : I_Cylinder; // Polymorphic reference				
+    iCylinder2 : I_Cylinder; // Polymorphic reference
+	
+    _state          : E_MachineState;
+    _subState       : E_ProductionState;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="ExecuteProductionSequence" Id="{6f4e5514-7149-4de1-b003-c9c66d1b37e5}">
+      <Declaration><![CDATA[METHOD ExecuteProductionSequence
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE _subState OF
+	E_ProductionState.EXTEND_CYL1:
+		CylinderDoubleActing.Extend();
+		_subState := E_ProductionState.WAIT_CYL1;
+
+	E_ProductionState.WAIT_CYL1:
+		IF CylinderDoubleActing.IsExtended THEN
+			_subState := E_ProductionState.EXTEND_CYL2;
+		END_IF
+
+	E_ProductionState.EXTEND_CYL2:
+		CylinderSingleActing.Extend();
+		_subState := E_ProductionState.WAIT_CYL2;
+
+	E_ProductionState.WAIT_CYL2:
+		IF CylinderSingleActing.IsExtended THEN
+			_subState := E_ProductionState.RETRACT_ALL;
+		END_IF
+
+	E_ProductionState.RETRACT_ALL:
+		CylinderDoubleActing.Retract();
+		CylinderSingleActing.Retract();
+		IF CylinderDoubleActing.IsRetracted AND CylinderSingleActing.IsRetracted THEN
+			_subState := E_ProductionState.COMPLETE;
+		END_IF
+
+	E_ProductionState.COMPLETE:
+		_state := E_MachineState.IDLE;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RegisterFault" Id="{f1fcf62b-e579-42de-99da-2404cbf740e1}">
+      <Declaration><![CDATA[METHOD RegisterFault : BOOL
+VAR_INPUT
+//	sReason : STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_state := E_MachineState.FAULTED;
+//_faultReason := sReason;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{cc66d3e2-baa2-4a28-90aa-e11c03921b47}">
+      <Declaration><![CDATA[METHOD Reset : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _state = E_MachineState.FAULTED THEN
+	_state := E_MachineState.IDLE;
+	Reset := TRUE;
+ELSE
+	Reset := FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Run" Id="{d1ecdcb2-ddb2-46de-bca0-86c2216b9294}">
+      <Declaration><![CDATA[METHOD Run]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[iCylinder := CylinderDoubleActing;
+iCylinder.Run();
+
+iCylinder2 := CylinderSingleActing;
+iCylinder2.Run();
+
+// Top level state machine
+CASE _state OF
+	E_MachineState.IDLE:
+		// waiting for Start() to be called
+
+	E_MachineState.STARTING:
+		THIS^.ExecuteProductionSequence();
+
+	E_MachineState.RUNNING:
+		THIS^.ExecuteProductionSequence();
+
+	E_MachineState.STOPPING:
+		THIS^.Stop();
+
+	E_MachineState.FAULTED:
+		THIS^.RegisterFault();
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Start" Id="{037948ba-268e-414d-95f1-aee9e1995f89}">
+      <Declaration><![CDATA[METHOD Start : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _state = E_MachineState.IDLE THEN
+	_state := E_MachineState.STARTING;
+	_subState := E_ProductionState.EXTEND_CYL1;
+	Start := TRUE;
+ELSE
+	Start := FALSE;  // rejected — not in valid state
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Stop" Id="{34a8209d-0358-4aee-98ec-44f2bf66887a}">
+      <Declaration><![CDATA[METHOD Stop : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _state = E_MachineState.RUNNING 
+OR _state = E_MachineState.STARTING THEN
+	_state := E_MachineState.STOPPING;
+	Stop := TRUE;
+ELSE
+	Stop := FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

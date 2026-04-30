@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_DigitalOutput_Test" Id="{3c7cc7e1-51aa-4921-8d8e-67b3c62ba62e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DigitalOutput_Test EXTENDS FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_TrueInputGivesTrueOutput();
+Test_FalseInputGivesFalseOutput();]]></ST>
+    </Implementation>
+    <Method Name="Test_FalseInputGivesFalseOutput" Id="{1c7b0795-528d-44e9-9d82-880df3c89ef7}">
+      <Declaration><![CDATA[METHOD Test_FalseInputGivesFalseOutput
+VAR
+    fbDigitalOutput : FB_DigitalOutputSoftware();
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_FalseInputGivesFalseOutput');
+
+// @TEST-RUN ErrorMessage
+fbDigitalOutput.RawInput := TRUE;
+fbDigitalOutput.Run();
+
+// @TEST-ASSERT ErrorMessage
+AssertTrue(fbDigitalOutput.Value, 'Value of Input should be TRUE');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_TrueInputGivesTrueOutput" Id="{97eddbb7-5abc-474c-999d-979305f0d4c8}">
+      <Declaration><![CDATA[METHOD Test_TrueInputGivesTrueOutput
+VAR
+    fbDigitalOutput : FB_DigitalOutputSoftware();
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('TrueInputGivesTrueOutput');
+
+// @TEST-RUN ErrorMessage
+fbDigitalOutput.RawInput := TRUE;
+fbDigitalOutput.Run();
+
+// @TEST-ASSERT ErrorMessage
+AssertTrue(fbDigitalOutput.Value, 'Value of Input should be TRUE');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

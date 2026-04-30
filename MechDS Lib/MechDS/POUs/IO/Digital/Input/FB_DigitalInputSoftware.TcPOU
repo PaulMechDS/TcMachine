@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_DigitalInputSoftware" Id="{6533f185-4612-47f8-bead-2475243bc045}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DigitalInputSoftware EXTENDS FB_DigitalInputBase
+VAR
+    _softwareInput : BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="RawInput" Id="{7883247d-fc40-4b9b-9595-26ad01737c15}">
+      <Declaration><![CDATA[PROPERTY RawInput : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{3d04c5a2-5330-4916-8b71-92db542f80a1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[RawInput := _softwareInput;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="SoftwareInput" Id="{51569d19-4c0a-444c-ad30-a469c60fb613}">
+      <Declaration><![CDATA[PROPERTY SoftwareInput : bool]]></Declaration>
+      <Set Name="Set" Id="{7a25eb56-6a0e-4054-b3c2-424fd7ee550d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_softwareInput := SoftwareInput; ]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+  </POU>
+</TcPlcObject>

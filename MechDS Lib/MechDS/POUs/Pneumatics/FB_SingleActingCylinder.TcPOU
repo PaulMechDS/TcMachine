@@ -1,17 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
-  <POU Name="FB_DoubleActingCylinder" Id="{ffa4c2dd-b8d3-4a22-8853-bf1eeb590119}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_DoubleActingCylinder EXTENDS FB_CylinderBase
+  <POU Name="FB_SingleActingCylinder" Id="{8f711575-6f1f-42bc-bb85-e59cf1d29ed8}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SingleActingCylinder EXTENDS FB_CylinderBase
 VAR
     iCylinderExtendedInput : I_DigitalInput;
     iCylinderRetractedInput : I_DigitalInput;
     iCylinderExtendOutput : I_DigitalOutput;
-    iCylinderRetractOutput : I_DigitalOutput;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Method Name="DriveOutputs" Id="{20a34b91-9cc1-48ad-a184-9e6f0651f2fd}">
+    <Method Name="DriveOutputs" Id="{531c7b78-e631-4287-9eaf-1d9daa0c0994}">
       <Declaration><![CDATA[METHOD PROTECTED DriveOutputs
 VAR_INPUT
     bExtend  : BOOL;
@@ -19,11 +18,10 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[iCylinderExtendOutput.RawInput := bExtend;
-iCylinderRetractOutput.RawInput := bRetract;]]></ST>
+        <ST><![CDATA[iCylinderExtendOutput.RawInput := bExtend;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="FB_Init" Id="{985d4540-2d82-49b1-9e64-1b501c31c996}">
+    <Method Name="FB_Init" Id="{edeb10f6-0c4b-4823-b7d4-da6401766637}">
       <Declaration><![CDATA[METHOD FB_Init : BOOL
 VAR_INPUT
 	bInitRetains	: BOOL;
@@ -34,17 +32,15 @@ VAR_INPUT
     iCylExtendedSwitch : I_DigitalInput;
     iCylRetractedSwitch : I_DigitalInput;
     iCylExtend : I_DigitalOutput;
-    iCylRetract : I_DigitalOutput;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[iCylinderExtendedInput := iCylExtendedSwitch;
 iCylinderRetractedInput := iCylRetractedSwitch;
-iCylinderExtendOutput := iCylExtend;
-iCylinderRetractOutput := iCylRetract;]]></ST>
+iCylinderExtendOutput := iCylExtend;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Run" Id="{fefa9c14-5898-414e-9f29-a8ad8b35549e}">
+    <Method Name="Run" Id="{636885b0-6cc8-4188-80c9-c1f6e04e3d27}">
       <Declaration><![CDATA[METHOD Run
 ]]></Declaration>
       <Implementation>
@@ -53,14 +49,10 @@ iCylinderRetractedInput.Run();
 
 SUPER^.Run();
 
-iCylinderExtendOutput.RawInput := _cmdExtend;
-iCylinderRetractOutput.RawInput := _cmdRetract;
-
-iCylinderExtendOutput.Run();
-iCylinderRetractOutput.Run();]]></ST>
+iCylinderExtendOutput.Run();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="SensorAtExtended" Id="{6fc96401-0297-4517-ba89-b6d3d4029ab2}">
+    <Method Name="SensorAtExtended" Id="{67b289ab-6c66-4fcf-a120-97e6589defb1}">
       <Declaration><![CDATA[METHOD PROTECTED SensorAtExtended : BOOL
 ]]></Declaration>
       <Implementation>
@@ -72,7 +64,7 @@ iCylinderRetractOutput.Run();]]></ST>
 END_CASE]]></ST>
       </Implementation>
     </Method>
-    <Method Name="SensorAtRetracted" Id="{62136e7e-ced1-4d54-8350-f90bcda764d3}">
+    <Method Name="SensorAtRetracted" Id="{d964c6f0-5002-4c44-8c6e-0319ce74ecea}">
       <Declaration><![CDATA[METHOD PROTECTED SensorAtRetracted : BOOL
 ]]></Declaration>
       <Implementation>

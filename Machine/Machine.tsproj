@@ -1,18 +1,58 @@
 <?xml version="1.0"?>
 <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4026.21">
-	<Project ProjectGUID="{D9F653E8-E308-4B27-82D3-1B7EE6DFFFD5}" Target64Bit="true" ShowHideConfigurations="#x6">
+	<Project ProjectGUID="{D9F653E8-E308-4B27-82D3-1B7EE6DFFFD5}" Target64Bit="true" ShowHideConfigurations="#x3c6">
 		<System>
 			<Tasks>
 				<Task Id="3" Priority="20" CycleTime="100000" AmsPort="350" AdtTasks="true">
 					<Name>PlcTask</Name>
 				</Task>
+				<Task Id="4" Priority="21" CycleTime="100000" AmsPort="351" AdtTasks="true">
+					<Name>PlcTask1</Name>
+				</Task>
 			</Tasks>
 		</System>
+		<Motion>
+			<NC File="NC.xti"/>
+		</Motion>
 		<Plc>
 			<Project GUID="{5DC2B562-B20E-4715-A51D-687C454ABBED}" Name="MachineA" PrjFilePath="MachineA\MachineA.plcproj" TmcFilePath="MachineA\MachineA.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{F73252C4-1EB1-896E-C378-E40665212A5E}" TmcPath="Untitled1\Untitled1.tmc">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{82EF84BF-0A0F-F5E0-F72A-2C62443550E9}" TmcPath="MachineA\MachineA.tmc">
 					<Name>MachineA Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+					<Vars VarGrpType="2" AreaNo="1">
+						<Name>PlcTask Outputs</Name>
+						<Var>
+							<Name>MAIN.fbEquipmentModule.DoubleActingCylinderExtendSolenoid.HardwareOutput</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.fbEquipmentModule.DoubleActingCylinderRetractSolenoid.HardwareOutput</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.fbEquipmentModule.SingleActingCylinderExtendSolenoid.HardwareOutput</Name>
+							<Type>BOOL</Type>
+						</Var>
+					</Vars>
+					<Vars VarGrpType="1">
+						<Name>PlcTask Inputs</Name>
+						<Var>
+							<Name>MAIN.fbEquipmentModule.DoubleActingCylinderExtendSensor.HardwareInput</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.fbEquipmentModule.DoubleActingCylinderRetractSensor.HardwareInput</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.fbEquipmentModule.SingleActingCylinderExtendSensor.HardwareInput</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.fbEquipmentModule.SingleActingCylinderRetractSensor.HardwareInput</Name>
+							<Type>BOOL</Type>
+						</Var>
+					</Vars>
 					<Contexts>
 						<Context>
 							<Id>0</Id>
@@ -29,6 +69,22 @@
 					</TaskPouOids>
 				</Instance>
 			</Project>
+			<Project File="MachineA_Sim.xti"/>
 		</Plc>
+		<Io/>
 	</Project>
+	<Mappings>
+		<MappingInfo Identifier="{08502001-2041-0850-0020-500840205008}" Id="#x02030010" Watchdog="04000000040000000400000004000000"/>
+		<OwnerA Name="TIPC^MachineA^MachineA Instance">
+			<OwnerB Name="TIPC^MachineA_Sim^MachineA_Sim Instance">
+				<Link VarA="PlcTask Inputs^MAIN.fbEquipmentModule.DoubleActingCylinderExtendSensor.HardwareInput" VarB="PlcTask Outputs^MAIN_SIM.bExtendSensor"/>
+				<Link VarA="PlcTask Inputs^MAIN.fbEquipmentModule.DoubleActingCylinderRetractSensor.HardwareInput" VarB="PlcTask Outputs^MAIN_SIM.bRetractSensor"/>
+				<Link VarA="PlcTask Inputs^MAIN.fbEquipmentModule.SingleActingCylinderExtendSensor.HardwareInput" VarB="PlcTask Outputs^MAIN_SIM.bExtendSensorSingle"/>
+				<Link VarA="PlcTask Inputs^MAIN.fbEquipmentModule.SingleActingCylinderRetractSensor.HardwareInput" VarB="PlcTask Outputs^MAIN_SIM.bRetractSensorSingle"/>
+				<Link VarA="PlcTask Outputs^MAIN.fbEquipmentModule.DoubleActingCylinderExtendSolenoid.HardwareOutput" VarB="PlcTask Inputs^MAIN_SIM.bExtendSolenoid"/>
+				<Link VarA="PlcTask Outputs^MAIN.fbEquipmentModule.DoubleActingCylinderRetractSolenoid.HardwareOutput" VarB="PlcTask Inputs^MAIN_SIM.bRetractSolenoid"/>
+				<Link VarA="PlcTask Outputs^MAIN.fbEquipmentModule.SingleActingCylinderExtendSolenoid.HardwareOutput" VarB="PlcTask Inputs^MAIN_SIM.bExtendSolenoidSingle"/>
+			</OwnerB>
+		</OwnerA>
+	</Mappings>
 </TcSmProject>

@@ -2,8 +2,11 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
   <POU Name="MAIN" Id="{5a08b74e-1f52-4672-a78b-c5cf190f2641}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
-VAR
-    fbMotorTest  : FB_Motor_Test;
+VAR   
+    fbDigitalInput_Test : FB_DigitalInput_Test;
+    fbDigitalOutput_Test : FB_DigitalOutput_Test;
+	fbMotor_Test : FB_Motor_Test;
+	fbDoubleActingCylinder_Test : FB_DoubleActingCylinder_Test;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[TcUnit.RUN_IN_SEQUENCE();]]></ST>

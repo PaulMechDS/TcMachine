@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_DigitalInputHardware" Id="{7449789a-67a3-4319-adab-97f65377af56}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DigitalInputHardware EXTENDS FB_DigitalInputBase
+VAR
+    HardwareInput AT %I* : BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="RawInput" Id="{ec7b0b21-4b36-4feb-a1ff-420bde93e872}">
+      <Declaration><![CDATA[PROPERTY RawInput : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{fc8dd985-daa0-4b03-86db-9f2d95bbe152}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[RawInput := HardwareInput;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

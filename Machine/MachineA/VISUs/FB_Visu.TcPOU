@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_Visu" Id="{dcd40392-ebb3-4154-8bd5-8ece59a252f1}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Visu 
+VAR_INPUT
+	bButtonRunProduction : BOOL;
+	fbEquipmentModule : REFERENCE TO  FB_EquipmentModule;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[(*
+IF bButtonExtendDouble THEN
+	fbEquipmentModule.ExtendDouble();
+ELSE
+	fbEquipmentModule.RetractDouble();	
+END_IF
+
+IF bButtonExtendSingle THEN
+	fbEquipmentModule.ExtendSingle();
+ELSE
+	fbEquipmentModule.RetractSingle();	
+END_IF
+*)
+
+IF bButtonRunProduction THEN
+    fbEquipmentModule.Start();
+ELSE
+    fbEquipmentModule.Stop();	
+END_IF]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

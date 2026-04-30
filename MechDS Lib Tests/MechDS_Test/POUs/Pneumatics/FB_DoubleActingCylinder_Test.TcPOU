@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_DoubleActingCylinder_Test" Id="{43f3677c-495d-4688-9748-4ee224ff70c0}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DoubleActingCylinder_Test EXTENDS FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_Extend();]]></ST>
+    </Implementation>
+    <Method Name="Test_Extend" Id="{fe8bdf4a-b4cb-464f-a3e6-881c02d6a96f}">
+      <Declaration><![CDATA[METHOD Test_Extend
+VAR
+	ExtendSensor : FB_DigitalInputSoftware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
+	RetractSensor : FB_DigitalInputSoftware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
+	ExtendSolenoid : FB_DigitalOutputSoftware;
+	RetractSolenoid : FB_DigitalOutputSoftware;	
+	
+	fbDoubleActingCylinder : FB_DoubleActingCylinder(
+		eSensorMode := E_SensorMode.BOTH, 
+		tExtendTimeout := T#0S,
+		tRetractTimeout := T#0S,
+		iCylExtendedSwitch := ExtendSensor,
+		iCylRetractedSwitch := RetractSensor,
+		iCylExtend := ExtendSolenoid,
+		iCylRetract := RetractSolenoid			
+	);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('TBA');
+
+// @TEST-RUN ErrorMessage
+fbDoubleActingCylinder.Run();
+
+// @TEST-ASSERT ErrorMessage
+AssertTrue(FALSE, 'Value of Input should be true');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

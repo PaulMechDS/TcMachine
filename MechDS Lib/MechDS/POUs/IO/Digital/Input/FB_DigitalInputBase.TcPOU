@@ -1,31 +1,54 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
-  <POU Name="FB_DigitalInput" Id="{62bcf3eb-b150-4853-a571-3bc6a924fc70}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_DigitalInput IMPLEMENTS I_DigitalInput
+  <POU Name="FB_DigitalInputBase" Id="{62bcf3eb-b150-4853-a571-3bc6a924fc70}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_DigitalInputBase IMPLEMENTS I_DigitalInput
 VAR
     _value : BOOL;
+	_invertInput : BOOL;
     _overrideEnable : BOOL;
     _overrideValue : BOOL;
-    _inverted : BOOL;
-    _tDebounce : TIME := T#10MS;
-    _timerDebounce : TON;
-    _bDebouncedVal : BOOL;
-	_bLastRaw : BOOL;
-    _rTrig : R_TRIG;
-    _fTrig : F_TRIG;
+    _debounceOnTime : TIME;
+	_debounceOffTime : TIME;
+
+	initDone : BOOL;
+    debounceOnTimer : TON;
+    debounceOffTimer : TON;
+    debouncedValue : BOOL;
+    rTrig : R_TRIG;
+    fTrig : F_TRIG;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Property Name="DebounceTime" Id="{9381e871-a6da-4e40-855b-e6399cf5eb57}">
-      <Declaration><![CDATA[PROPERTY DebounceTime : TIME
+    <Property Name="DebounceOffTime" Id="{781b756c-2dda-45d9-9f4d-5b5ba3ec83fd}">
+      <Declaration><![CDATA[PROPERTY DebounceOffTime : TIME
+]]></Declaration>
+      <Get Name="Get" Id="{4bced4f6-4a7e-4d61-86d2-beea39ac6f2c}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[DebounceOffTime := _debounceOffTime;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{45ac0191-64e3-44dc-8476-794062d9f180}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_debounceOffTime := DebounceOffTime;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="DebounceOnTime" Id="{9381e871-a6da-4e40-855b-e6399cf5eb57}">
+      <Declaration><![CDATA[PROPERTY DebounceOnTime : TIME
 ]]></Declaration>
       <Get Name="Get" Id="{81e27506-25e5-4f67-a6d6-86482ce553f3}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[DebounceTime := _tDebounce;]]></ST>
+          <ST><![CDATA[DebounceOnTime := _debounceOnTime;]]></ST>
         </Implementation>
       </Get>
       <Set Name="Set" Id="{393b2af4-a914-462c-961e-463d5df2123f}">
@@ -33,7 +56,7 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[_tDebounce := DebounceTime;]]></ST>
+          <ST><![CDATA[_debounceOnTime := DebounceOnTime;]]></ST>
         </Implementation>
       </Set>
     </Property>
@@ -43,48 +66,26 @@ END_VAR
       <Get Name="Get" Id="{85f146d6-223c-4bbc-94a0-2753f40e7b41}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
-          <ST><![CDATA[FallingEdge := _rTrig.Q;]]></ST>
+          <ST><![CDATA[FallingEdge := rTrig.Q;]]></ST>
         </Implementation>
       </Get>
     </Property>
     <Method Name="FB_Init" Id="{7cae908f-6b82-41d5-9197-480a404339c9}">
-      <Declaration><![CDATA[//FB_Init is always available implicitly and it is used primarily for initialization.
-//The return value is not evaluated. For a specific influence, you can also declare the
-//methods explicitly and provide additional code there with the standard initialization
-//code. You can evaluate the return value.
-METHOD FB_Init: BOOL
+      <Declaration><![CDATA[METHOD FB_Init: BOOL
 VAR_INPUT
-    bInitRetains: BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
-    bInCopyCode: BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)   
-    tDebounce       : TIME;
-    bInverted       : BOOL;
+    bInitRetains : BOOL;
+    bInCopyCode : BOOL;
+    DebounceOnTime : TIME;
+    DebounceOffTime : TIME;
+	Invert : BOOL;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_tDebounce := tDebounce;
-_inverted := bInverted;]]></ST>
+        <ST><![CDATA[_debounceOnTime := DebounceOnTime;
+_debounceOffTime := DebounceOffTime;
+_invertInput := Invert;]]></ST>
       </Implementation>
     </Method>
-    <Property Name="Inverted" Id="{56c32b0f-b38d-4daf-ad87-2dd3a9105aca}">
-      <Declaration><![CDATA[PROPERTY Inverted : BOOL
-]]></Declaration>
-      <Get Name="Get" Id="{c25de303-88ea-4bce-8e2e-de04608053d4}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[Inverted := _inverted;]]></ST>
-        </Implementation>
-      </Get>
-      <Set Name="Set" Id="{59018184-0861-40cb-823d-7cf95552deac}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
-        <Implementation>
-          <ST><![CDATA[_inverted := Inverted;]]></ST>
-        </Implementation>
-      </Set>
-    </Property>
     <Property Name="OverrideEnable" Id="{d212aec1-9560-4971-8769-4942c537a049}">
       <Declaration><![CDATA[PROPERTY OverrideEnable : BOOL
 ]]></Declaration>
@@ -125,48 +126,73 @@ END_VAR
         </Implementation>
       </Set>
     </Property>
+    <Property Name="RawInput" Id="{cf4402ec-0e9c-43a0-9a1a-a98b8ed717c4}">
+      <Declaration><![CDATA[PROPERTY ABSTRACT RawInput : BOOL]]></Declaration>
+      <Get Name="Get" Id="{aaf7da55-861e-4926-beba-3ef2598d9a94}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Property Name="RisingEdge" Id="{cf113e80-6110-450a-8656-3e72decb6eb7}">
       <Declaration><![CDATA[PROPERTY RisingEdge : BOOL
 ]]></Declaration>
       <Get Name="Get" Id="{130f7724-a5db-4e83-9c33-cf34a48c86ba}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
-          <ST><![CDATA[RisingEdge := _fTrig.Q;]]></ST>
+          <ST><![CDATA[RisingEdge := fTrig.Q;]]></ST>
         </Implementation>
       </Get>
     </Property>
     <Method Name="Run" Id="{a9ece054-d8fc-422e-8693-2457f6756a83}">
       <Declaration><![CDATA[METHOD Run
-VAR_INPUT
-	bRawInput : BOOL;
-END_VAR
 VAR
-    bProcessed : BOOL;
+	currentRaw : BOOL;
+    intermediateValue : BOOL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[// Debounce — timer resets if input changes before it elapses
-IF bRawInput <> _bLastRaw THEN
-	_timerDebounce(IN := FALSE, PT := _tDebounce);
-END_IF
-_timerDebounce(IN := TRUE, PT := _tDebounce);
-_bLastRaw := bRawInput;
+        <ST><![CDATA[currentRaw := THIS^.RawInput;
 
-IF _timerDebounce.Q THEN
-	_bDebouncedVal := bRawInput;
+// First cycle init
+IF NOT initDone THEN
+    debouncedValue := currentRaw;
+    initDone := TRUE;
 END_IF
 
+// Debounce
+debounceOnTimer(
+    IN := currentRaw AND NOT debouncedValue,
+    PT := _debounceOnTime
+);
+
+debounceOffTimer(
+    IN := NOT currentRaw AND debouncedValue,
+    PT := _debounceOffTime
+);
+
+IF debounceOnTimer.Q THEN
+    debouncedValue := TRUE;
+END_IF;
+
+IF debounceOffTimer.Q THEN
+    debouncedValue := FALSE;
+END_IF;
+	
 // Invert
-bProcessed := _bDebouncedVal XOR _inverted;
+intermediateValue := debouncedValue XOR _invertInput;
 
 // Override
 IF _overrideEnable THEN
 	_value := _overrideValue;
 ELSE
-	_value := bProcessed;
+	_value := intermediateValue;
 END_IF
 
-_rTrig(CLK := _value);
-_fTrig(CLK := _value);]]></ST>
+rTrig(CLK := _value);
+fTrig(CLK := _value);]]></ST>
       </Implementation>
     </Method>
     <Property Name="Value" Id="{a252e364-4f72-4f71-8ec5-9f3aa223f332}">

@@ -1,20 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
-  <DUT Name="E_MachineState" Id="{9f2aaf82-a011-4119-a81f-9b171b9a9f3f}">
+  <DUT Name="E_MachineState" Id="{bfcba98b-a7e7-4cdf-85b5-9bf0c5c1b82a}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'strict'}
 {attribute 'to_string'}
 TYPE E_MachineState :
 (
-    Init := 0,
-    Idle := 10,
-    Starting := 20,
-    Execute := 30,
-    Stopping := 40,
-    Aborting := 50,
-    Aborted := 60,
-    Error := 70
+    IDLE,
+    STARTING,
+    RUNNING,
+    STOPPING,
+    FAULTED
 );
-END_TYPE]]></Declaration>
+END_TYPE
+]]></Declaration>
   </DUT>
 </TcPlcObject>

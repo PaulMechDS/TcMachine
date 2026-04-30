@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_SingleCylinder_Sim" Id="{79e1a3c6-7f14-456b-bb01-627a6578ae91}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SingleCylinder_Sim
+VAR_INPUT
+	bExtendSolenoid : BOOL;
+END_VAR
+VAR_OUTPUT
+	bExtendSensor : BOOL;
+	bRetractSensor : BOOL;
+END_VAR
+VAR
+	tExtend : TON;
+	tRetract : TON;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[tExtend(IN := bExtendSolenoid, PT := T#0.5S);
+tRetract(IN := NOT bExtendSolenoid, PT := T#0.5S);
+
+IF bExtendSolenoid THEN
+	bRetractSensor := FALSE;	
+END_IF
+IF NOT bExtendSolenoid THEN
+	bExtendSensor := FALSE;	
+END_IF
+
+IF tExtend.Q THEN
+	bExtendSensor := TRUE;	
+END_IF
+IF tRetract.Q THEN
+	bRetractSensor := TRUE;
+END_IF]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

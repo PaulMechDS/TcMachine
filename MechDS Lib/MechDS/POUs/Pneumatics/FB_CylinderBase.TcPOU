@@ -3,6 +3,7 @@
   <POU Name="FB_CylinderBase" Id="{eb5ec553-b2e9-4217-b11c-eb9336ba6e3e}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_CylinderBase IMPLEMENTS I_Cylinder
 VAR
+	_eSensorMode        : E_SensorMode;
     _state              : E_CylinderState;
     _faultCode          : E_CylinderFault;
     _isFaulted          : BOOL;
@@ -10,7 +11,6 @@ VAR
     _cmdRetract         : BOOL;
     _timerExtend        : TON;
     _timerRetract       : TON;
-    _eSensorMode        : E_SensorMode;
     _tExtendTimeout     : TIME;
     _tRetractTimeout    : TIME;
 END_VAR]]></Declaration>
@@ -34,7 +34,6 @@ END_VAR]]></Declaration>
         <ST><![CDATA[IF NOT _isFaulted THEN
 	_cmdExtend  := TRUE;
 	_cmdRetract := FALSE;
-	Extend();
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -44,7 +43,7 @@ END_IF]]></ST>
       <Get Name="Get" Id="{3ea66213-f56a-4097-afc0-8ca5a2da7797}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
-          <ST><![CDATA[FaultCode := THIS^._faultCode;]]></ST>
+          <ST><![CDATA[FaultCode := THIS^.faultCode;]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -119,17 +118,16 @@ Reset();]]></ST>
         <ST><![CDATA[IF NOT _isFaulted THEN
 	_cmdRetract := TRUE;
 	_cmdExtend  := FALSE;
-	Retract();
 END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Run" Id="{8397213b-184b-46c1-866e-888319e44605}">
       <Declaration><![CDATA[METHOD Run
 VAR
-    bExtendDone     : BOOL;
-    bRetractDone    : BOOL;
-    bUseExtTimer    : BOOL;
-    bUseRetTimer    : BOOL;
+    extendDone     : BOOL;
+    retractDone    : BOOL;
+    useExtTimer    : BOOL;
+    useRetTimer    : BOOL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Sensor conflict (only relevant when both sensors configured)
@@ -145,13 +143,13 @@ IF _isFaulted THEN
 END_IF
 
 // Determine if a sensor confirms position, or we fall through to timer
-bExtendDone  := THIS^.SensorAtExtended();
-bRetractDone := THIS^.SensorAtRetracted();
+extendDone  := THIS^.SensorAtExtended();
+retractDone := THIS^.SensorAtRetracted();
 
 // Timers are the fallback when no sensor covers that direction
-bUseExtTimer := (_eSensorMode = E_SensorMode.NONE
+useExtTimer := (_eSensorMode = E_SensorMode.NONE
 				 OR _eSensorMode = E_SensorMode.RETRACT_ONLY);
-bUseRetTimer := (_eSensorMode = E_SensorMode.NONE
+useRetTimer := (_eSensorMode = E_SensorMode.NONE
 				 OR _eSensorMode = E_SensorMode.EXTEND_ONLY);
 
 _timerExtend(IN  := (_state = E_CylinderState.EXTENDING),
@@ -160,20 +158,20 @@ _timerRetract(IN := (_state = E_CylinderState.RETRACTING),
 			  PT := _tRetractTimeout);
 
 // Promote timer expiry to "done" when no sensor is covering that direction
-IF bUseExtTimer  AND _timerExtend.Q  THEN bExtendDone  := TRUE; END_IF
-IF bUseRetTimer  AND _timerRetract.Q THEN bRetractDone := TRUE; END_IF
+IF useExtTimer  AND _timerExtend.Q  THEN extendDone  := TRUE; END_IF
+IF useRetTimer  AND _timerRetract.Q THEN retractDone := TRUE; END_IF
 
 // Timeout fault — only fires when a sensor IS configured and move timed out
-IF NOT bUseExtTimer  AND _timerExtend.Q  THEN
+IF NOT useExtTimer  AND _timerExtend.Q  THEN
 	THIS^.SetFault(E_CylinderFault.EXTEND_TIMEOUT);
 	RETURN;
 END_IF
-IF NOT bUseRetTimer  AND _timerRetract.Q THEN
+IF NOT useRetTimer  AND _timerRetract.Q THEN
 	THIS^.SetFault(E_CylinderFault.RETRACT_TIMEOUT);
 	RETURN;
 END_IF
 
-// --- State machine ---
+// State machine
 CASE _state OF
 
 	E_CylinderState.IDLE:
@@ -183,7 +181,7 @@ CASE _state OF
 
 	E_CylinderState.EXTENDING:
 		THIS^.DriveOutputs(bExtend := TRUE, bRetract := FALSE);
-		IF bExtendDone THEN
+		IF extendDone THEN
 			_state      := E_CylinderState.EXTENDED;
 			_cmdExtend  := FALSE;
 			_timerExtend(IN := FALSE, PT := _tExtendTimeout);
@@ -195,7 +193,7 @@ CASE _state OF
 
 	E_CylinderState.RETRACTING:
 		THIS^.DriveOutputs(bExtend := FALSE, bRetract := TRUE);
-		IF bRetractDone THEN
+		IF retractDone THEN
 			_state       := E_CylinderState.RETRACTED;
 			_cmdRetract  := FALSE;
 			_timerRetract(IN := FALSE, PT := _tRetractTimeout);

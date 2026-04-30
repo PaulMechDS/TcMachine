@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
-  <POU Name="FB_DigitalOutput" Id="{20d7a993-bee3-49fb-a834-6412ab94a790}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_DigitalOutput IMPLEMENTS I_DigitalOutput
+  <POU Name="FB_DigitalOutputBase" Id="{20d7a993-bee3-49fb-a834-6412ab94a790}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_DigitalOutputBase IMPLEMENTS I_DigitalOutput
 VAR
 	_overrideEnable : BOOL;
 	_overrideValue : BOOL;
+	_rawInput : BOOL;
 	_value : BOOL;
 END_VAR
 ]]></Declaration>
@@ -45,16 +46,32 @@ END_VAR
         </Implementation>
       </Set>
     </Property>
+    <Property Name="RawInput" Id="{3b5b7fca-61b9-4a8a-8fbf-07a2bc89b051}">
+      <Declaration><![CDATA[PROPERTY RawInput : BOOL]]></Declaration>
+      <Get Name="Get" Id="{6d06faaa-18c3-4eb9-958f-ff78a136148d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[RawInput := _rawInput;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{98bdcbce-0178-434b-a268-70f2a329920a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_rawInput := RawInput;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
     <Method Name="Run" Id="{22c6521e-5bdf-44e1-8546-00727e9f2686}">
-      <Declaration><![CDATA[METHOD Run
-VAR_INPUT
-	bRawValue : BOOL;
-END_VAR]]></Declaration>
+      <Declaration><![CDATA[METHOD Run]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF _overrideEnable THEN
 	_value := _overrideValue;
 ELSE
-	_value := bRawValue;
+	_value := _rawInput;
 END_IF]]></ST>
       </Implementation>
     </Method>

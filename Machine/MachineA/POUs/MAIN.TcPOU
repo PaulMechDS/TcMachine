@@ -3,32 +3,13 @@
   <POU Name="MAIN" Id="{992a4bb5-a518-488f-ae00-ab35077fe46f}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-    inputCyl1_Ext  : FB_DigitalInput(tDebounce := T#10MS, bInverted := FALSE);
-    inputCyl1_Ret  : FB_DigitalInput(tDebounce := T#10MS, bInverted := FALSE);
-    outputCyl1_Ext : FB_DigitalOutput;
-    outputCyl1_Ret : FB_DigitalOutput;
-
-    cylDouble : FB_DoubleActingCylinder(
-                iCylExtendedSwitch     := inputCyl1_Ext,
-                iCylRetractedSwitch    := inputCyl1_Ret,
-                iCylExtend      := outputCyl1_Ext,
-                iCylRetract     := outputCyl1_Ret,
-                eSensorMode     := E_SensorMode.BOTH,
-                tExtendTimeout  := T#3S,
-                tRetractTimeout := T#3S);
-				
-    iCyl : I_Cylinder; // Polymorphic reference
-
-END_VAR
-]]></Declaration>
+    fbEquipmentModule : FB_EquipmentModule;
+	fbVisu : FB_Visu();
+END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[// --- Polymorphic usage ---
-iCyl := cylDouble;   // Or cylSingle — sequence doesn't care
+      <ST><![CDATA[fbEquipmentModule.Run();
 
-iCyl.Extend();
-
-iCyl.Run();
-]]></ST>
+fbVisu(fbEquipmentModule := fbEquipmentModule);]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>

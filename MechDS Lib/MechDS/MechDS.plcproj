@@ -34,28 +34,34 @@
     <Compile Include="POUs\IO\Analog\I_AnalogOutput.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\IO\Digital\Input\FB_DigitalInput.TcPOU">
+    <Compile Include="POUs\IO\Digital\Input\FB_DigitalInputBase.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\IO\Digital\Input\FB_DigitalInputHardware.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\IO\Digital\Input\FB_DigitalInputSoftware.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\IO\Digital\Input\I_DigitalInput.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\IO\Digital\Output\FB_DigitalOutput.TcPOU">
+    <Compile Include="POUs\IO\Digital\Output\FB_DigitalOutputBase.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\IO\Digital\Output\FB_DigitalOutputHardware.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\IO\Digital\Output\FB_DigitalOutputSoftware.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\IO\Digital\Output\I_DigitalOutput.TcIO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\Machine\E_MachineState.TcDUT">
+    <Compile Include="POUs\Motion\FB_Axis.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\Machine\FB_Sequence.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\Motion\I_Motor.TcIO">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="POUs\Motion\FB_Motor.TcPOU">
+    <Compile Include="POUs\Motion\I_Axis.TcIO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\Pneumatics\E_SensorMode.TcDUT">
@@ -68,6 +74,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\Pneumatics\FB_DoubleActingCylinder.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\Pneumatics\FB_SingleActingCylinder.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\Pneumatics\I_Cylinder.TcIO">
@@ -86,7 +95,6 @@
     <Folder Include="POUs\IO\Digital\Input" />
     <Folder Include="POUs\IO\Digital\Output" />
     <Folder Include="POUs\Motion" />
-    <Folder Include="POUs\Machine" />
     <Folder Include="POUs\Faults" />
     <Folder Include="POUs\Pneumatics" />
     <Folder Include="VISUs" />
@@ -142,7 +150,12 @@
         <o>
           <v n="Name">"{246001F4-279D-43AC-B241-948EB31120E1}"</v>
           <d n="SubKeys" t="Hashtable" />
-          <d n="Values" t="Hashtable" />
+          <d n="Values" t="Hashtable" ckt="String" cvt="Boolean">
+            <v>GeneralPropertySupport</v>
+            <v>True</v>
+            <v>UnicodeStrings</v>
+            <v>False</v>
+          </d>
         </o>
         <v>{29BD8D0C-3586-4548-BB48-497B9A01693F}</v>
         <o>

@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="MAIN_SIM" Id="{819db18f-dda9-42ce-a55f-e1688299f30d}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN_SIM
+VAR
+	bExtendSolenoid AT %I* : BOOL;
+	bRetractSolenoid AT %I* : BOOL;
+
+	bExtendSensor AT %Q* : BOOL;
+	bRetractSensor AT %Q* : BOOL;
+	
+	fbDoubleCylinderSim : FB_DoubleCylinder_Sim;
+	
+	bExtendSolenoidSingle AT %I* : BOOL;
+
+	bExtendSensorSingle AT %Q* : BOOL;
+	bRetractSensorSingle AT %Q* : BOOL;
+	
+	fbCylinderSingleSim : FB_SingleCylinder_Sim;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbDoubleCylinderSim(
+	bExtendSolenoid := bExtendSolenoid,
+	bRetractSolenoid := bRetractSolenoid,
+	bExtendSensor => bExtendSensor,
+	bRetractSensor => bRetractSensor
+);
+
+fbCylinderSingleSim(
+	bExtendSolenoid := bExtendSolenoidSingle,
+	bExtendSensor => bExtendSensorSingle,
+	bRetractSensor => bRetractSensorSingle
+);]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

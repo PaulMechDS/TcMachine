@@ -3,56 +3,32 @@
   <PropertyGroup>
     <FileVersion>1.0.0.0</FileVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5dc2b562-b20e-4715-a51d-687c454abbed}</ProjectGuid>
+    <ProjectGuid>{f968baa6-afc6-40fa-88da-a486943149d7}</ProjectGuid>
     <SubObjectsSortedByName>True</SubObjectsSortedByName>
     <DownloadApplicationInfo>true</DownloadApplicationInfo>
     <WriteProductVersion>true</WriteProductVersion>
     <GenerateTpy>false</GenerateTpy>
-    <Name>MachineA</Name>
+    <Name>MachineA_Sim</Name>
     <ProgramVersion>3.1.4026.21</ProgramVersion>
-    <Application>{19dfeb7b-f541-46c9-b6b5-b00a3ec58f86}</Application>
-    <TypeSystem>{73f2adf4-be01-4b50-957d-0b35497b5f30}</TypeSystem>
-    <Implicit_Task_Info>{feff31a7-3464-4a90-971a-cf799bc71359}</Implicit_Task_Info>
-    <Implicit_KindOfTask>{15effb69-32d5-4505-9f8a-ae0e303314ef}</Implicit_KindOfTask>
-    <Implicit_Jitter_Distribution>{1b37f66a-1432-4f63-870b-bf9d153a658a}</Implicit_Jitter_Distribution>
-    <LibraryReferences>{96049c1b-ac83-4ed9-8099-efdd5b4af5f5}</LibraryReferences>
-    <CompilerDefines>VISU_USEPROPERTYINFO</CompilerDefines>
+    <Application>{d5f0c172-1173-4e4a-a50e-0d60e546f583}</Application>
+    <TypeSystem>{275349c8-5e17-4424-995b-fa4f8ba55f7a}</TypeSystem>
+    <Implicit_Task_Info>{fcafeea3-9e50-4681-ad57-e87770a381f6}</Implicit_Task_Info>
+    <Implicit_KindOfTask>{ccb2ead0-411f-449c-88e7-514f2b88d0f8}</Implicit_KindOfTask>
+    <Implicit_Jitter_Distribution>{627d4a52-d990-4c9c-8035-c8488538b530}</Implicit_Jitter_Distribution>
+    <LibraryReferences>{cd7cc52d-38dd-4ee5-b16d-4c1077a5664a}</LibraryReferences>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DUTs\E_MachineState.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DUTs\E_ProductionState.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DUTs\ST_PneumaticCylinder.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GlobalTextList.TcGTLO">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\FB_EquipmentModule.TcPOU">
+    <Compile Include="POUs\FB_DoubleCylinder_Sim.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\MAIN.TcPOU">
+    <Compile Include="POUs\FB_SingleCylinder_Sim.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Visualization Manager.TcVMO">
+    <Compile Include="POUs\MAIN_SIM.TcPOU">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="VISUs\FB_Visu.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="VISUs\PneumaticCylinder.TcVIS">
-      <SubType>Code</SubType>
-      <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
-    </Compile>
-    <Compile Include="VISUs\Visualization.TcVIS">
-      <SubType>Code</SubType>
-      <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -62,52 +38,6 @@
     <Folder Include="POUs" />
   </ItemGroup>
   <ItemGroup>
-    <PlaceholderReference Include="DeviceLibrary">
-      <DefaultResolution>[DeviceLibrary], * (MechDS)</DefaultResolution>
-      <Namespace>DeviceLibrary</Namespace>
-    </PlaceholderReference>
-    <PlaceholderReference Include="System_VisuElemMeter">
-      <DefaultResolution>VisuElemMeter, 4.7.0.0 (System)</DefaultResolution>
-      <Namespace>VisuElemMeter</Namespace>
-      <SystemLibrary>true</SystemLibrary>
-      <ResolverGuid>2717eb6a-dd07-4c66-8d8d-cacebd7b18ae</ResolverGuid>
-    </PlaceholderReference>
-    <PlaceholderReference Include="System_VisuElems">
-      <DefaultResolution>VisuElems, 4.8.0.0 (System)</DefaultResolution>
-      <Namespace>VisuElems</Namespace>
-      <SystemLibrary>true</SystemLibrary>
-      <ResolverGuid>2717eb6a-dd07-4c66-8d8d-cacebd7b18ae</ResolverGuid>
-    </PlaceholderReference>
-    <PlaceholderReference Include="System_VisuElemsSpecialControls">
-      <DefaultResolution>VisuElemsSpecialControls, 4.7.0.0 (System)</DefaultResolution>
-      <Namespace>VisuElemsSpecialControls</Namespace>
-      <SystemLibrary>true</SystemLibrary>
-      <ResolverGuid>2717eb6a-dd07-4c66-8d8d-cacebd7b18ae</ResolverGuid>
-    </PlaceholderReference>
-    <PlaceholderReference Include="System_VisuElemsWinControls">
-      <DefaultResolution>VisuElemsWinControls, 4.8.0.0 (System)</DefaultResolution>
-      <Namespace>VisuElemsWinControls</Namespace>
-      <SystemLibrary>true</SystemLibrary>
-      <ResolverGuid>2717eb6a-dd07-4c66-8d8d-cacebd7b18ae</ResolverGuid>
-    </PlaceholderReference>
-    <PlaceholderReference Include="System_VisuElemTextEditor">
-      <DefaultResolution>VisuElemTextEditor, 4.8.0.0 (System)</DefaultResolution>
-      <Namespace>VisuElemTextEditor</Namespace>
-      <SystemLibrary>true</SystemLibrary>
-      <ResolverGuid>2717eb6a-dd07-4c66-8d8d-cacebd7b18ae</ResolverGuid>
-    </PlaceholderReference>
-    <PlaceholderReference Include="System_VisuInputs">
-      <DefaultResolution>VisuInputs, 4.7.0.0 (System)</DefaultResolution>
-      <Namespace>VisuInputs</Namespace>
-      <SystemLibrary>true</SystemLibrary>
-      <ResolverGuid>2717eb6a-dd07-4c66-8d8d-cacebd7b18ae</ResolverGuid>
-    </PlaceholderReference>
-    <PlaceholderReference Include="System_VisuNativeControl">
-      <DefaultResolution>VisuNativeControl, 4.8.0.0 (System)</DefaultResolution>
-      <Namespace>VisuNativeControl</Namespace>
-      <SystemLibrary>true</SystemLibrary>
-      <ResolverGuid>2717eb6a-dd07-4c66-8d8d-cacebd7b18ae</ResolverGuid>
-    </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Standard">
       <DefaultResolution>Tc2_Standard, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_Standard</Namespace>
@@ -116,27 +46,14 @@
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="Tc3_DriveMotionControl">
-      <DefaultResolution>Tc3_DriveMotionControl, * (Beckhoff Automation GmbH)</DefaultResolution>
-      <Namespace>Tc3_DriveMotionControl</Namespace>
-    </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Module</Namespace>
       <SystemLibrary>true</SystemLibrary>
     </PlaceholderReference>
-    <PlaceholderReference Include="VisuSymbols">
-      <DefaultResolution>VisuSymbols, 4.5.0.0 (System)</DefaultResolution>
-      <Namespace>VisuSymbols</Namespace>
-    </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Untitled1.tmc">
-      <SubType>Content</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="MachineA.tmc">
+    <None Include="MachineA_Sim.tmc">
       <SubType>Content</SubType>
     </None>
   </ItemGroup>

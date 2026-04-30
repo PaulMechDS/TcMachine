@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_DigitalOutputHardware" Id="{222a2064-ac62-48b5-8405-3dedb5bfef91}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DigitalOutputHardware EXTENDS FB_DigitalOutputBase
+VAR
+	HardwareOutput AT %Q* : BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Run" Id="{85c6c3e8-f2e3-457f-a34e-1d1d77287484}">
+      <Declaration><![CDATA[METHOD Run
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SUPER^.Run();
+HardwareOutput := _value;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

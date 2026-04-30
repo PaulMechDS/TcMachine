@@ -21,6 +21,15 @@
         <Declaration><![CDATA[]]></Declaration>
       </Set>
     </Property>
+    <Property Name="RawInput" Id="{eed28c31-fab3-4d77-a952-61120b4ad3ea}">
+      <Declaration><![CDATA[PROPERTY RawInput : BOOL]]></Declaration>
+      <Get Name="Get" Id="{36ca96db-02b4-4ad9-bc79-c75812e4d06b}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+      <Set Name="Set" Id="{cc3e3103-0852-4ff7-9aac-ca9e9f230e5d}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Set>
+    </Property>
     <Method Name="Run" Id="{d9c277e1-fb41-4088-bf64-db8231f6f93d}">
       <Declaration><![CDATA[METHOD Run]]></Declaration>
     </Method>
