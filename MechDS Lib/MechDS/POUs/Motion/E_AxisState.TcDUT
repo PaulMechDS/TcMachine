@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <DUT Name="E_AxisState" Id="{83eab452-b3d8-4a54-b594-bc5a5dba1b08}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_AxisState :
+(
+    DISABLED,
+    ENABLING,
+    IDLE,
+    HOMING,
+    MOVING_ABSOLUTE,
+    MOVING_RELATIVE,
+    HALTING,
+    STOPPING,
+    ERROR
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

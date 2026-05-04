@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
-  <DUT Name="E_MachineState" Id="{bfcba98b-a7e7-4cdf-85b5-9bf0c5c1b82a}">
+  <DUT Name="E_MachineState" Id="{4e306afa-1e30-406f-b2fd-69c7b2c0036c}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'strict'}
 {attribute 'to_string'}

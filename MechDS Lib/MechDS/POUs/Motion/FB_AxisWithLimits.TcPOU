@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_AxisWithLimits" Id="{bec05e3f-db45-4a05-8fb5-60c551c257da}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_AxisWithLimits EXTENDS FB_Axis
+VAR
+	ForwardLimitSwitch : I_DigitalInput;
+	ReverseLimitSwitch : I_DigitalInput;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

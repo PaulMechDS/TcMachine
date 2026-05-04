@@ -107,8 +107,7 @@ _cmdExtend  := FALSE;
 _cmdRetract := FALSE;
 _state      := E_CylinderState.IDLE;
 _timerExtend(IN  := FALSE, PT := _tExtendTimeout);
-_timerRetract(IN := FALSE, PT := _tRetractTimeout);
-Reset();]]></ST>
+_timerRetract(IN := FALSE, PT := _tRetractTimeout);]]></ST>
       </Implementation>
     </Method>
     <Method Name="Retract" Id="{317b4c47-dc5c-4715-a73b-b065f4e46109}">
@@ -186,6 +185,9 @@ CASE _state OF
 			_cmdExtend  := FALSE;
 			_timerExtend(IN := FALSE, PT := _tExtendTimeout);
 		END_IF
+		IF _cmdRetract THEN
+			_state := E_CylinderState.RETRACTING;
+		END_IF
 
 	E_CylinderState.EXTENDED:
 		THIS^.DriveOutputs(bExtend := TRUE, bRetract := FALSE);
@@ -197,6 +199,9 @@ CASE _state OF
 			_state       := E_CylinderState.RETRACTED;
 			_cmdRetract  := FALSE;
 			_timerRetract(IN := FALSE, PT := _tRetractTimeout);
+		END_IF
+		IF _cmdExtend THEN
+			_state := E_CylinderState.RETRACTING;
 		END_IF
 
 	E_CylinderState.RETRACTED:

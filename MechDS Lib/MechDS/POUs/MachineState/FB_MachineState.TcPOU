@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_MachineState" Id="{6afc3cd7-0d2e-40dd-8ee4-113019338961}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_MachineState
+VAR 
+	_state : E_MachineState;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Fault" Id="{4fef538f-1840-4791-810e-7d443c472080}">
+      <Declaration><![CDATA[METHOD Fault : BOOL
+VAR_INPUT
+	//sReason : STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_state := E_MachineState.FAULTED;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{1b31e610-f25a-4b8b-86ee-e6879e7eadd0}">
+      <Declaration><![CDATA[METHOD Reset : BOOL]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _state = E_MachineState.FAULTED THEN
+	_state := E_MachineState.IDLE;
+	Reset := TRUE;
+ELSE
+	Reset := FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Start" Id="{35f30475-996e-4029-895b-0a2334524640}">
+      <Declaration><![CDATA[METHOD Start : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF (_state = E_MachineState.IDLE) THEN
+	_state := E_MachineState.STARTING;
+	Start := TRUE;
+ELSE
+	Start := FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="State" Id="{b35fc39b-00f9-4e32-b832-ef4ee0600396}">
+      <Declaration><![CDATA[PROPERTY State : E_MachineState]]></Declaration>
+      <Get Name="Get" Id="{236ed799-6bb3-4649-b5cc-c71a68157865}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[State := _state;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Stop" Id="{8fdc4a96-0619-4cfa-8e42-60848b1921f2}">
+      <Declaration><![CDATA[METHOD Stop : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF (_state = E_MachineState.RUNNING) OR (_state = E_MachineState.STARTING) THEN
+	_state := E_MachineState.STOPPING;
+	Stop := TRUE;
+ELSE
+	Stop := FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

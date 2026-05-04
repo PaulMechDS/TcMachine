@@ -58,7 +58,19 @@
     <Compile Include="POUs\IO\Digital\Output\I_DigitalOutput.TcIO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\MachineState\E_MachineState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\MachineState\FB_MachineState.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\Motion\E_AxisState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\Motion\FB_Axis.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\Motion\FB_AxisWithLimits.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\Motion\I_Axis.TcIO">
@@ -87,8 +99,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DUTs" />
-    <Folder Include="GVLs" />
     <Folder Include="POUs\IO" />
     <Folder Include="POUs\IO\Digital" />
     <Folder Include="POUs\IO\Analog" />
@@ -96,11 +106,16 @@
     <Folder Include="POUs\IO\Digital\Output" />
     <Folder Include="POUs\Motion" />
     <Folder Include="POUs\Faults" />
+    <Folder Include="POUs\MachineState" />
     <Folder Include="POUs\Pneumatics" />
     <Folder Include="VISUs" />
     <Folder Include="POUs" />
   </ItemGroup>
   <ItemGroup>
+    <PlaceholderReference Include="Tc2_MC2">
+      <DefaultResolution>Tc2_MC2, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_MC2</Namespace>
+    </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Standard">
       <DefaultResolution>Tc2_Standard, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_Standard</Namespace>
@@ -108,10 +123,6 @@
     <PlaceholderReference Include="Tc2_System">
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
-    </PlaceholderReference>
-    <PlaceholderReference Include="Tc3_DriveMotionControl">
-      <DefaultResolution>Tc3_DriveMotionControl, * (Beckhoff Automation GmbH)</DefaultResolution>
-      <Namespace>Tc3_DriveMotionControl</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>

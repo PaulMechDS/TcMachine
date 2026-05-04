@@ -3,29 +3,63 @@
   <POU Name="FB_Visu" Id="{dcd40392-ebb3-4154-8bd5-8ece59a252f1}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Visu 
 VAR_INPUT
+	bButtonReset : BOOL;
+
+	bButtonExtendDouble : BOOL;
+	bButtonExtendSingle : BOOL;
+	
+	bButtonEnableAxis : BOOL;
+	bButtonHomeAxis : BOOL;
+	
 	bButtonRunProduction : BOOL;
+
 	fbEquipmentModule : REFERENCE TO  FB_EquipmentModule;
+END_VAR
+VAR_OUTPUT
+	fPosition : LREAL;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[(*
-IF bButtonExtendDouble THEN
-	fbEquipmentModule.ExtendDouble();
-ELSE
-	fbEquipmentModule.RetractDouble();	
+      <ST><![CDATA[IF bButtonReset THEN
+	fbEquipmentModule.Reset();
+	fbEquipmentModule.CylDouble.Reset();
+	fbEquipmentModule.CylSingle.Reset();
+	fbEquipmentModule.AxisConveryor.Reset();	
+	bButtonReset := FALSE;
 END_IF
 
-IF bButtonExtendSingle THEN
-	fbEquipmentModule.ExtendSingle();
-ELSE
-	fbEquipmentModule.RetractSingle();	
+// Manual Cylinder Control
+IF NOT bButtonRunProduction THEN
+	IF bButtonExtendDouble THEN
+		fbEquipmentModule.CylDouble.Extend();
+	ELSE
+		fbEquipmentModule.CylDouble.Retract();	
+	END_IF
+	
+	IF bButtonExtendSingle THEN
+		fbEquipmentModule.CylSingle.Extend();
+	ELSE
+		fbEquipmentModule.CylSingle.Retract();	
+	END_IF
 END_IF
-*)
 
+// Manual Motion Control
+IF bButtonEnableAxis THEN
+	fbEquipmentModule.AxisConveryor.Enable();
+	bButtonEnableAxis := FALSE;
+END_IF
+IF bButtonHomeAxis THEN
+	fbEquipmentModule.AxisConveryor.Home(50.0);
+	bButtonHomeAxis := FALSE;
+END_IF
+
+// Production
 IF bButtonRunProduction THEN
     fbEquipmentModule.Start();
 ELSE
     fbEquipmentModule.Stop();	
-END_IF]]></ST>
+END_IF
+
+fPosition := fbEquipmentModule.AxisConveryor.ActualPosition;]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>
