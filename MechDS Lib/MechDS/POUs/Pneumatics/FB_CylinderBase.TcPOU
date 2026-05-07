@@ -271,16 +271,14 @@ _cmdRetract := FALSE;
     <Method Name="SetFaults" Id="{9dd73ea3-d10d-4ebe-b14c-83792ee5f77e}">
       <Declaration><![CDATA[METHOD SetFaults
 VAR_INPUT
-    ipFaultExtend  : I_Fault;
-    ipFaultRetract : I_Fault;
-	//ipFaultSensorConflict : I_Fault;
+	stCylinderFaults : ST_CylinderFaults;
 END_VAR
 
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_ipFaultExtend  := ipFaultExtend;
-_ipFaultRetract := ipFaultRetract;
-//_ipFaultSensorConflict := ipFaultSensorConflict;]]></ST>
+        <ST><![CDATA[_ipFaultExtend  := stCylinderFaults.ipFaultExtend;
+_ipFaultRetract := stCylinderFaults.ipFaultRetract;
+_ipFaultSensorConflict := stCylinderFaults.ipFaultSensorConflict;]]></ST>
       </Implementation>
     </Method>
     <Method Name="SetInterlock" Id="{4c6efab8-c29d-461a-9844-8cbad3be4bcb}">

@@ -88,6 +88,9 @@
     <Compile Include="POUs\Motion\I_Axis.TcIO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\Pneumatics\ST_CylinderFaults.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\Pneumatics\E_SensorMode.TcDUT">
       <SubType>Code</SubType>
     </Compile>

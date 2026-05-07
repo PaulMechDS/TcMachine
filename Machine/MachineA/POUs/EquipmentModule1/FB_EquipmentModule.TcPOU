@@ -203,20 +203,21 @@ VAR_INPUT
     bInCopyCode: BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)   
 END_VAR
 VAR
-	ipFault : I_Fault;
+	stFaults : ST_CylinderFaults;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CylinderDoubleActing.SetInterlock(_CylinderSingleActingIsRestracted);
 
 // Inject faults into cylinders
-CylinderDoubleActing.SetFaults(
-	ipFaultExtend  := fbFaultCyl1Extend,
-	ipFaultRetract := fbFaultCyl1Retract,
-);
-CylinderSingleActing.SetFaults(
-	ipFaultExtend  := fbFaultCyl2Extend,
-	ipFaultRetract := fbFaultCyl2Retract,
-);
+stFaults.ipFaultExtend := fbFaultCyl1Extend;
+stFaults.ipFaultRetract := fbFaultCyl1Retract;
+stFaults.ipFaultSensorConflict := fbFaultCyl1SensorConflict;
+CylinderDoubleActing.SetFaults(stFaults);
+
+stFaults.ipFaultExtend  := fbFaultCyl2Extend;
+stFaults.ipFaultRetract := fbFaultCyl2Retract;
+stFaults.ipFaultSensorConflict := 0;
+CylinderSingleActing.SetFaults(stFaults);
 
 fbFaultManager.RegisterFault(fbFaultCyl1Extend);
 fbFaultManager.RegisterFault(fbFaultCyl1Retract);

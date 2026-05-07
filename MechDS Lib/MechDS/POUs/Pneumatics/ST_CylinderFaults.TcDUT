@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <DUT Name="ST_CylinderFaults" Id="{789f9285-879d-4ce0-a182-95a0e1e299e9}">
+    <Declaration><![CDATA[TYPE ST_CylinderFaults :
+STRUCT
+	ipFaultExtend : I_Fault;
+    ipFaultRetract : I_Fault;
+    ipFaultSensorConflict : I_Fault;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
