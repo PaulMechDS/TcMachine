@@ -151,15 +151,26 @@ END_VAR]]></Declaration>
         <ST><![CDATA[// Sensor conflict (only relevant when both sensors configured)
 IF _eSensorMode = E_SensorMode.BOTH AND THIS^.SensorAtExtended() AND THIS^.SensorAtRetracted() THEN
     THIS^.SetFault(E_CylinderFault.SENSOR_CONFLICT);
-    IF _ipFaultExtend <> 0 THEN
-        _ipFaultExtend.Raise();
-    END_IF
 END_IF
 
 IF _isFaulted THEN
     THIS^.DriveOutputs(bExtend := FALSE, bRetract := FALSE);
     _timerExtend(IN  := FALSE, PT := _tExtendTimeout);
     _timerRetract(IN := FALSE, PT := _tRetractTimeout);
+    CASE _faultCode OF
+        E_CylinderFault.EXTEND_TIMEOUT:
+            IF _ipFaultExtend <> 0 THEN
+                _ipFaultExtend.Raise();
+            END_IF
+        E_CylinderFault.RETRACT_TIMEOUT:
+            IF _ipFaultRetract <> 0 THEN
+                _ipFaultRetract.Raise();
+            END_IF
+        E_CylinderFault.SENSOR_CONFLICT:
+            IF _ipFaultSensorConflict <> 0 THEN
+                _ipFaultSensorConflict.Raise();
+            END_IF
+    END_CASE
     RETURN;
 END_IF
 
@@ -168,10 +179,8 @@ extendDone  := THIS^.SensorAtExtended();
 retractDone := THIS^.SensorAtRetracted();
 
 // Timers are the fallback when no sensor covers that direction
-useExtTimer := (_eSensorMode = E_SensorMode.NONE
-             OR _eSensorMode = E_SensorMode.RETRACT_ONLY);
-useRetTimer := (_eSensorMode = E_SensorMode.NONE
-             OR _eSensorMode = E_SensorMode.EXTEND_ONLY);
+useExtTimer := (_eSensorMode = E_SensorMode.NONE OR _eSensorMode = E_SensorMode.RETRACT_ONLY);
+useRetTimer := (_eSensorMode = E_SensorMode.NONE OR _eSensorMode = E_SensorMode.EXTEND_ONLY);
 
 _timerExtend(IN  := (_state = E_CylinderState.EXTENDING),
              PT  := _tExtendTimeout);
@@ -183,28 +192,18 @@ IF useExtTimer AND _timerExtend.Q  THEN extendDone  := TRUE; END_IF
 IF useRetTimer AND _timerRetract.Q THEN retractDone := TRUE; END_IF
 
 // Timeout fault — only fires when a sensor IS configured and move timed out
-IF NOT useExtTimer AND _timerExtend.Q THEN
+IF (NOT useExtTimer AND _timerExtend.Q) THEN
     THIS^.SetFault(E_CylinderFault.EXTEND_TIMEOUT);
-    IF _ipFaultExtend <> 0 THEN
-        _ipFaultExtend.Raise();
-    END_IF
-    RETURN;
-END_IF
-
-IF NOT useRetTimer AND _timerRetract.Q THEN
+ELSIF (NOT useRetTimer AND _timerRetract.Q) THEN
     THIS^.SetFault(E_CylinderFault.RETRACT_TIMEOUT);
-    IF _ipFaultRetract <> 0 THEN
-        _ipFaultRetract.Raise();
-    END_IF
-    RETURN;
 END_IF
 
 // State machine
 CASE _state OF
     E_CylinderState.IDLE:
         THIS^.DriveOutputs(bExtend := FALSE, bRetract := FALSE);
-        IF _cmdExtend  THEN _state := E_CylinderState.EXTENDING;  END_IF
-        IF _cmdRetract THEN _state := E_CylinderState.RETRACTING; END_IF
+        IF _cmdExtend  AND NOT THIS^.IsInterlocked THEN _state := E_CylinderState.EXTENDING;  END_IF
+        IF _cmdRetract AND NOT THIS^.IsInterlocked THEN _state := E_CylinderState.RETRACTING; END_IF
 
     E_CylinderState.EXTENDING:
         THIS^.DriveOutputs(bExtend := TRUE, bRetract := FALSE);
@@ -213,13 +212,13 @@ CASE _state OF
             _cmdExtend := FALSE;
             _timerExtend(IN := FALSE, PT := _tExtendTimeout);
         END_IF
-        IF _cmdRetract THEN
+        IF _cmdRetract AND NOT THIS^.IsInterlocked THEN
             _state := E_CylinderState.RETRACTING;
         END_IF
 
     E_CylinderState.EXTENDED:
         THIS^.DriveOutputs(bExtend := TRUE, bRetract := FALSE);
-        IF _cmdRetract THEN _state := E_CylinderState.RETRACTING; END_IF
+        IF _cmdRetract AND NOT THIS^.IsInterlocked THEN _state := E_CylinderState.RETRACTING; END_IF
 
     E_CylinderState.RETRACTING:
         THIS^.DriveOutputs(bExtend := FALSE, bRetract := TRUE);
@@ -228,13 +227,13 @@ CASE _state OF
             _cmdRetract := FALSE;
             _timerRetract(IN := FALSE, PT := _tRetractTimeout);
         END_IF
-        IF _cmdExtend THEN
+        IF _cmdExtend AND NOT THIS^.IsInterlocked THEN
             _state := E_CylinderState.EXTENDING;
         END_IF
 
     E_CylinderState.RETRACTED:
         THIS^.DriveOutputs(bExtend := FALSE, bRetract := FALSE);
-        IF _cmdExtend THEN _state := E_CylinderState.EXTENDING; END_IF
+        IF _cmdExtend AND NOT THIS^.IsInterlocked THEN _state := E_CylinderState.EXTENDING; END_IF
 
     E_CylinderState.FAULTED:
         THIS^.DriveOutputs(bExtend := FALSE, bRetract := FALSE);

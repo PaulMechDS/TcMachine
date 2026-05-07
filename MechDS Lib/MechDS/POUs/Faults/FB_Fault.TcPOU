@@ -10,7 +10,6 @@ VAR_INPUT
 END_VAR
 VAR
     _state        : E_FaultState;
-    _severity     : E_FaultSeverity;
     _timestamp    : DATE_AND_TIME;
     _autoReset    : BOOL;  // clears automatically when condition gone
 END_VAR
@@ -106,13 +105,9 @@ END_VAR
       </Get>
     </Property>
     <Method Name="Raise" Id="{421cd696-e463-4315-a9d1-8ba04c4e8c65}">
-      <Declaration><![CDATA[METHOD Raise
-VAR
-    eSeverity: E_FaultSeverity;	
-END_VAR]]></Declaration>
+      <Declaration><![CDATA[METHOD Raise]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF _state = E_FaultState.INACTIVE THEN
-	_severity     := eSeverity;
 	_timestamp    := THIS^.GetTimestamp();
 	_state        := E_FaultState.ACTIVE;
 END_IF
@@ -124,7 +119,7 @@ END_IF
       <Get Name="Get" Id="{feadb65f-9f26-48d9-b916-85fd1aa4d6a6}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
-          <ST><![CDATA[Severity := _severity;]]></ST>
+          <ST><![CDATA[Severity := eSeverity;]]></ST>
         </Implementation>
       </Get>
     </Property>
