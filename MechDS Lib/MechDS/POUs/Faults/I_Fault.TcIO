@@ -3,5 +3,59 @@
   <Itf Name="I_Fault" Id="{3d7523ee-f469-41b2-95c2-31b6dda08954}">
     <Declaration><![CDATA[INTERFACE I_Fault
 ]]></Declaration>
+    <Method Name="Acknowledge" Id="{5a46c8ca-17a6-4f6e-a036-a1b00313fd52}">
+      <Declaration><![CDATA[METHOD Acknowledge
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Clear" Id="{0b1a43e6-4315-4e36-8da0-333b4ff3d02c}">
+      <Declaration><![CDATA[METHOD Clear
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="FaultCode" Id="{73d32827-1592-4f08-9334-f1c19d70846f}">
+      <Declaration><![CDATA[PROPERTY FaultCode : UDINT]]></Declaration>
+      <Get Name="Get" Id="{3e95e720-a472-45df-ad72-25aab5eb4b09}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="FaultMessage" Id="{faefed8a-e0b8-4d48-98c9-5bd76316d570}">
+      <Declaration><![CDATA[PROPERTY FaultMessage : STRING]]></Declaration>
+      <Get Name="Get" Id="{ccdc0936-2405-4a96-945b-3fbd8806a8a7}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="IsAcknowledged" Id="{b3bcfb93-3977-456f-9713-b076902a011a}">
+      <Declaration><![CDATA[PROPERTY IsAcknowledged : BOOL]]></Declaration>
+      <Get Name="Get" Id="{93a7c554-8ea7-463a-996c-2ff0034f0b49}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="IsActive" Id="{19632952-32e7-4d15-ba42-557b94624653}">
+      <Declaration><![CDATA[PROPERTY IsActive : BOOL]]></Declaration>
+      <Get Name="Get" Id="{a2b608ca-b008-440c-bf85-7d24cb080774}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Raise" Id="{8a0336eb-8fd1-4e6c-b812-8a1106f335d2}">
+      <Declaration><![CDATA[METHOD Raise
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="Severity" Id="{9e30a77b-2f79-4a27-9e00-2d1e9b8d03f5}">
+      <Declaration><![CDATA[PROPERTY Severity : E_FaultSeverity]]></Declaration>
+      <Get Name="Get" Id="{12f48f59-2eaf-4bd7-9dd0-833df7d7750c}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="Timestamp" Id="{d35243b6-5811-479e-8960-5df9c7f4968c}">
+      <Declaration><![CDATA[PROPERTY Timestamp : DATE_AND_TIME]]></Declaration>
+      <Get Name="Get" Id="{62bada3c-464d-457e-a748-11a7bec29dff}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
   </Itf>
 </TcPlcObject>

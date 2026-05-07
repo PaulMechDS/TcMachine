@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_Fault" Id="{7abd6b29-0fb7-4d97-bedf-164a83cc0308}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Fault IMPLEMENTS I_Fault
+VAR_INPUT
+    bAutoReset : BOOL;
+    eSeverity  : E_FaultSeverity;
+    nCode      : UDINT;
+    sMessage   : STRING;
+END_VAR
+VAR
+    _state        : E_FaultState;
+    _severity     : E_FaultSeverity;
+    _timestamp    : DATE_AND_TIME;
+    _autoReset    : BOOL;  // clears automatically when condition gone
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Acknowledge" Id="{0fc90aae-ce68-4f8c-b665-a3d52ee08d47}">
+      <Declaration><![CDATA[METHOD Acknowledge
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _state = E_FaultState.ACTIVE THEN
+	_state := E_FaultState.ACKNOWLEDGED;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Clear" Id="{564a2191-930c-44d1-8aed-44c1f01f9fcd}">
+      <Declaration><![CDATA[METHOD Clear]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bAutoReset AND (_state = E_FaultState.ACTIVE) THEN
+	_state     := E_FaultState.INACTIVE;
+	_timestamp := DT#1970-01-01-00:00:00;
+ELSIF _state = E_FaultState.ACKNOWLEDGED THEN
+	_state     := E_FaultState.INACTIVE;
+	_timestamp := DT#1970-01-01-00:00:00;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="FaultCode" Id="{98b26eb3-fe64-4ad4-bafc-1359721d0ed0}">
+      <Declaration><![CDATA[PROPERTY FaultCode : UDINT
+]]></Declaration>
+      <Get Name="Get" Id="{a2b4224e-3e63-4d25-88f2-b611820570c9}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[FaultCode := nCode;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="FaultMessage" Id="{b6acb53e-46a3-4d25-b68d-b930fcaf50ee}">
+      <Declaration><![CDATA[PROPERTY FaultMessage : STRING
+]]></Declaration>
+      <Get Name="Get" Id="{f1977165-7cc5-4d6f-a836-2b70de1a92a7}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[FaultMessage := sMessage;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="FB_Init" Id="{2e221b8b-2129-4121-934b-146a30dd3fdf}">
+      <Declaration><![CDATA[METHOD FB_Init: BOOL
+VAR_INPUT
+    bInitRetains: BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
+    bInCopyCode: BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)   
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetTimestamp" Id="{a9e8b9e5-fab9-4772-b799-79b490a35441}">
+      <Declaration><![CDATA[METHOD GetTimestamp : DATE_AND_TIME
+VAR
+    sysTime : TIMESTRUCT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[GetTimestamp := FILETIME64_TO_DT(F_GetSystemTime());]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="IsAcknowledged" Id="{67eaac1a-a76f-47f8-9a85-038b5bf9c06c}">
+      <Declaration><![CDATA[PROPERTY IsAcknowledged : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{bd1be654-91de-40d7-9319-04864d2bc84f}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IsAcknowledged := (_state = E_FaultState.ACKNOWLEDGED);]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="IsActive" Id="{a3630e04-5f00-4ab1-ba54-388b8fa503b7}">
+      <Declaration><![CDATA[PROPERTY IsActive : BOOL]]></Declaration>
+      <Get Name="Get" Id="{62489908-4f6e-42ba-adbc-0dec6b71524a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IsActive := (_state = E_FaultState.ACTIVE);]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Raise" Id="{421cd696-e463-4315-a9d1-8ba04c4e8c65}">
+      <Declaration><![CDATA[METHOD Raise
+VAR
+    eSeverity: E_FaultSeverity;	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _state = E_FaultState.INACTIVE THEN
+	_severity     := eSeverity;
+	_timestamp    := THIS^.GetTimestamp();
+	_state        := E_FaultState.ACTIVE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Severity" Id="{5e834369-00e9-4ab6-9397-33dbfd657204}">
+      <Declaration><![CDATA[PROPERTY Severity : E_FaultSeverity]]></Declaration>
+      <Get Name="Get" Id="{feadb65f-9f26-48d9-b916-85fd1aa4d6a6}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Severity := _severity;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Timestamp" Id="{b3cf9b10-e118-4d10-9c40-15dd9aa5b02d}">
+      <Declaration><![CDATA[PROPERTY Timestamp : DATE_AND_TIME
+]]></Declaration>
+      <Get Name="Get" Id="{278b9cdf-10e1-4e74-a9a2-2877c881dd8d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Timestamp := _timestamp;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

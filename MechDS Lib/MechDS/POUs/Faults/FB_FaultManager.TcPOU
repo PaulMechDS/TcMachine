@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_FaultManager" Id="{4717d332-79fb-48c6-82da-c60198653386}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_FaultManager
+VAR
+    _faults : ARRAY[1..32] OF I_Fault;
+    _managers : ARRAY[1..8] OF POINTER TO FB_FaultManager;
+    _faultCount : INT;
+    _managerCount : INT;
+    _anyActive : BOOL;
+    _anyCritical : BOOL;
+	_activeFaultCount : INT;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="AcknowledgeAll" Id="{b27af37b-7c3b-47ac-8d92-f0037560415f}">
+      <Declaration><![CDATA[METHOD AcknowledgeAll
+VAR_INPUT
+	i : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i := 1 TO _faultCount DO
+	IF _faults[i] <> 0 THEN
+		_faults[i].Acknowledge();
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ActiveFaultCount" Id="{79d64f86-1faf-469c-b2e6-f020151b31ee}">
+      <Declaration><![CDATA[PROPERTY ActiveFaultCount : INT]]></Declaration>
+      <Get Name="Get" Id="{922b0782-2847-4f8d-8588-f337de364628}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ActiveFaultCount := _activeFaultCount;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="AnyActive" Id="{8374ffc5-5e2d-4af0-a231-6194ad68b626}">
+      <Declaration><![CDATA[PROPERTY AnyActive : BOOL]]></Declaration>
+      <Get Name="Get" Id="{03c50485-c6d5-495a-9bad-6167d647f881}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[AnyActive := _anyActive;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="AnyCritical" Id="{64245f93-b417-43dc-8a5f-9fedd9712ade}">
+      <Declaration><![CDATA[PROPERTY AnyCritical : BOOL]]></Declaration>
+      <Get Name="Get" Id="{c9569c2e-776f-4997-bd4a-34050866249b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[AnyCritical := _anyCritical;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="FaultManager" Id="{48f16295-7d57-4751-87d6-9d4323d3850f}">
+      <Declaration><![CDATA[PROPERTY FaultManager : POINTER TO FB_FaultManager]]></Declaration>
+      <Get Name="Get" Id="{6a5228b1-8e5e-4dbc-bcd7-b8dc59dbfb2b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[FaultManager := ADR(faultManager);]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="RegisterFault" Id="{05669956-93b8-4d7f-893c-c73196805caa}">
+      <Declaration><![CDATA[METHOD RegisterFault
+VAR_INPUT
+	ipFault : I_Fault;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _faultCount < 32 THEN
+	_faultCount := _faultCount + 1;
+	_faults[_faultCount] := ipFault;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RegisterManager" Id="{bbf8a068-b48a-443d-a7d3-d47a6dbb0674}">
+      <Declaration><![CDATA[METHOD RegisterManager
+VAR_INPUT
+    pManager : POINTER TO FB_FaultManager;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _managerCount < 8 THEN
+	_managerCount := _managerCount + 1;
+	_managers[_managerCount] := pManager;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Run" Id="{60c8e260-457a-4b3b-9cd4-cbe78b47798e}">
+      <Declaration><![CDATA[METHOD Run : BOOL
+VAR
+    i : INT;
+	_faultInstance : I_Fault;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_anyActive        := FALSE;
+_anyCritical      := FALSE;
+_activeFaultCount := 0;
+
+FOR i := 1 TO _faultCount DO
+	_faultInstance := _faults[i];
+    IF _faultInstance <> 0 THEN
+        IF _faultInstance.IsActive THEN
+            _anyActive        := TRUE;
+            _activeFaultCount := _activeFaultCount + 1;
+        END_IF
+        IF _faultInstance.IsActive 
+        AND _faultInstance.Severity = E_FaultSeverity.CRITICAL THEN
+            _anyCritical := TRUE;
+        END_IF
+    END_IF
+END_FOR
+
+// Roll up from child managers
+FOR i := 1 TO _managerCount DO
+    IF _managers[i] <> 0 THEN
+        IF _managers[i]^.AnyActive THEN
+            _anyActive        := TRUE;
+            _activeFaultCount := _activeFaultCount + _managers[i]^.ActiveFaultCount;
+        END_IF
+        IF _managers[i]^.AnyCritical THEN
+            _anyCritical := TRUE;
+        END_IF
+    END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

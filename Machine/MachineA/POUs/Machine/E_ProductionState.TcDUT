@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <DUT Name="E_ProductionState" Id="{0b7988cb-368b-464c-9db0-e3e20f63660c}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_ProductionState :
+(
+    START_MODULE1,
+    WAIT_MODULE1,
+    COMPLETE
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

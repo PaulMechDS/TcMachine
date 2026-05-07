@@ -3,13 +3,12 @@
   <POU Name="MAIN" Id="{992a4bb5-a518-488f-ae00-ab35077fe46f}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-    fbEquipmentModule : FB_EquipmentModule;
-	fbVisu : FB_Visu();
+	fbMachine : FB_Machine;
+	fbVisu : FB_Visu;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[fbEquipmentModule.Run();
-
-fbVisu(fbEquipmentModule := fbEquipmentModule);]]></ST>
+      <ST><![CDATA[fbVisu(fbMachine := fbMachine);
+fbMachine.Run();]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>

@@ -9,7 +9,7 @@
     <WriteProductVersion>true</WriteProductVersion>
     <GenerateTpy>false</GenerateTpy>
     <Name>MechDS_Test</Name>
-    <ProgramVersion>3.1.4026.21</ProgramVersion>
+    <ProgramVersion>3.1.4026.22</ProgramVersion>
     <Application>{c6a2a155-3d02-44ca-a8ac-efabbafe2ddf}</Application>
     <TypeSystem>{d3b70dbe-084b-4721-9ae5-96e15a75fa74}</TypeSystem>
     <Implicit_Task_Info>{a2fe0d12-e43b-4891-98ff-e88080cfa002}</Implicit_Task_Info>

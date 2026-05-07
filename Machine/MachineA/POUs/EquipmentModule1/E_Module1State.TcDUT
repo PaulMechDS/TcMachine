@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <DUT Name="E_Module1State" Id="{0a97ac1c-5917-4da7-86f0-6c5cb37696e7}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_Module1State :
+(
+    EXTEND_CYL1,
+    WAIT_CYL1,
+    EXTEND_CYL2,
+    WAIT_CYL2,
+    RETRACT_ALL,
+    COMPLETE
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

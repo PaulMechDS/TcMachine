@@ -13,53 +13,50 @@ VAR_INPUT
 	
 	bButtonRunProduction : BOOL;
 
-	fbEquipmentModule : REFERENCE TO  FB_EquipmentModule;
+	fbMachine : REFERENCE TO  FB_Machine;
 END_VAR
 VAR_OUTPUT
 	fPosition : LREAL;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[IF bButtonReset THEN
-	fbEquipmentModule.Reset();
-	fbEquipmentModule.CylDouble.Reset();
-	fbEquipmentModule.CylSingle.Reset();
-	fbEquipmentModule.AxisConveryor.Reset();	
+	fbMachine.Reset();
 	bButtonReset := FALSE;
 END_IF
 
 // Manual Cylinder Control
 IF NOT bButtonRunProduction THEN
 	IF bButtonExtendDouble THEN
-		fbEquipmentModule.CylDouble.Extend();
+		fbMachine.CylDouble.Extend();
 	ELSE
-		fbEquipmentModule.CylDouble.Retract();	
+		fbMachine.CylDouble.Retract();	
 	END_IF
-	
+
 	IF bButtonExtendSingle THEN
-		fbEquipmentModule.CylSingle.Extend();
+		fbMachine.CylSingle.Extend();
 	ELSE
-		fbEquipmentModule.CylSingle.Retract();	
+		fbMachine.CylSingle.Retract();	
 	END_IF
 END_IF
 
 // Manual Motion Control
 IF bButtonEnableAxis THEN
-	fbEquipmentModule.AxisConveryor.Enable();
+	fbMachine.AxisConveyor.Enable();
 	bButtonEnableAxis := FALSE;
 END_IF
 IF bButtonHomeAxis THEN
-	fbEquipmentModule.AxisConveryor.Home(50.0);
+	fbMachine.AxisConveyor.Home(50.0);
 	bButtonHomeAxis := FALSE;
 END_IF
 
 // Production
 IF bButtonRunProduction THEN
-    fbEquipmentModule.Start();
+    fbMachine.ExecuteProduction();
 ELSE
-    fbEquipmentModule.Stop();	
+    fbMachine.ExecuteStop();	
 END_IF
 
-fPosition := fbEquipmentModule.AxisConveryor.ActualPosition;]]></ST>
+fPosition := fbMachine.AxisConveyor.ActualPosition;]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>

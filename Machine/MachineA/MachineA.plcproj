@@ -9,7 +9,7 @@
     <WriteProductVersion>true</WriteProductVersion>
     <GenerateTpy>false</GenerateTpy>
     <Name>MachineA</Name>
-    <ProgramVersion>3.1.4026.21</ProgramVersion>
+    <ProgramVersion>3.1.4026.22</ProgramVersion>
     <Application>{19dfeb7b-f541-46c9-b6b5-b00a3ec58f86}</Application>
     <TypeSystem>{73f2adf4-be01-4b50-957d-0b35497b5f30}</TypeSystem>
     <Implicit_Task_Info>{feff31a7-3464-4a90-971a-cf799bc71359}</Implicit_Task_Info>
@@ -19,16 +19,22 @@
     <CompilerDefines>VISU_USEPROPERTYINFO</CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DUTs\E_ProductionState.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="GlobalTextList.TcGTLO">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\FB_EquipmentModule.TcPOU">
+    <Compile Include="POUs\EquipmentModule1\E_Module1State.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\EquipmentModule1\FB_EquipmentModule.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\Machine\E_ProductionState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\Machine\FB_Machine.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\MAIN.TcPOU">
@@ -50,8 +56,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DUTs" />
     <Folder Include="GVLs" />
+    <Folder Include="POUs\EquipmentModule1" />
+    <Folder Include="POUs\Machine" />
     <Folder Include="VISUs" />
     <Folder Include="POUs" />
   </ItemGroup>

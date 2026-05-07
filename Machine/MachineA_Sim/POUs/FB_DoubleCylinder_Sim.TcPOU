@@ -11,12 +11,14 @@ VAR_OUTPUT
 	bRetractSensor : BOOL;
 END_VAR
 VAR
+	tExtendTime : TIME := T#0.5S;
+	tRetractTime : TIME := T#0.5S;
 	tExtend : TON;
 	tRetract : TON;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[tExtend(IN := bExtendSolenoid, PT := T#0.5S);
-tRetract(IN := bRetractSolenoid, PT := T#0.5S);
+      <ST><![CDATA[tExtend(IN := bExtendSolenoid, PT := tExtendTime);
+tRetract(IN := bRetractSolenoid, PT := tRetractTime);
 
 IF bExtendSolenoid THEN
 	bRetractSensor := FALSE;	

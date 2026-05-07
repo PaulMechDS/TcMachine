@@ -27,6 +27,12 @@ END_VAR
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
+    <Property Name="IsInterlocked" Id="{7676d46b-dcd3-4f6f-8fe6-2f9e67ba16c6}">
+      <Declaration><![CDATA[PROPERTY IsInterlocked : BOOL]]></Declaration>
+      <Get Name="Get" Id="{87560631-6149-4aa9-9405-4bfef1db0e82}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
     <Property Name="IsRetracted" Id="{ab453333-4a51-4605-9fe2-3067a8477a7a}">
       <Declaration><![CDATA[PROPERTY IsRetracted : bool]]></Declaration>
       <Get Name="Get" Id="{65f66302-3fc9-4fd3-b521-22e1283969f0}">

@@ -9,7 +9,7 @@
     <WriteProductVersion>true</WriteProductVersion>
     <GenerateTpy>false</GenerateTpy>
     <Name>MachineA_Sim</Name>
-    <ProgramVersion>3.1.4026.21</ProgramVersion>
+    <ProgramVersion>3.1.4026.22</ProgramVersion>
     <Application>{d5f0c172-1173-4e4a-a50e-0d60e546f583}</Application>
     <TypeSystem>{275349c8-5e17-4424-995b-fa4f8ba55f7a}</TypeSystem>
     <Implicit_Task_Info>{fcafeea3-9e50-4681-ad57-e87770a381f6}</Implicit_Task_Info>

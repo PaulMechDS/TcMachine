@@ -19,6 +19,17 @@ END_VAR
         <ST><![CDATA[_state := E_MachineState.FAULTED;]]></ST>
       </Implementation>
     </Method>
+    <Property Name="IsIdle" Id="{a1d6f884-0525-47ad-a818-d728a4b7fb78}">
+      <Declaration><![CDATA[PROPERTY IsIdle : BOOL]]></Declaration>
+      <Get Name="Get" Id="{9a94567a-565b-4ef3-b916-b80dae1cd00b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IsIdle := _state = E_MachineState.IDLE;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Method Name="Reset" Id="{1b31e610-f25a-4b8b-86ee-e6879e7eadd0}">
       <Declaration><![CDATA[METHOD Reset : BOOL]]></Declaration>
       <Implementation>

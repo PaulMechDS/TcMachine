@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_Machine" Id="{9867281b-1dd1-4e04-862c-6305d906eed6}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Machine EXTENDS FB_MachineState
+VAR
+    _subState : E_ProductionState;
+	fbModule1 : FB_EquipmentModule;
+	fbFaultManager : FB_FaultManager;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="AxisConveyor" Id="{bbbfb074-51ac-41af-b477-a265d8fa65be}">
+      <Declaration><![CDATA[PROPERTY AxisConveyor : I_Axis]]></Declaration>
+      <Get Name="Get" Id="{a9746ca9-b0cd-4f78-b4f0-1d1a640f49a3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[AxisConveyor := fbModule1.AxisConveryor;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="CylDouble" Id="{346fc9e2-98c9-4af8-96c9-962970dab784}">
+      <Declaration><![CDATA[PROPERTY CylDouble : I_Cylinder]]></Declaration>
+      <Get Name="Get" Id="{02118e89-0a4d-43da-bd5d-32d93c64919e}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[CylDouble := fbModule1.CylDouble;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="CylSingle" Id="{84073dc0-9dc0-445f-8c3f-cda205ba7a6f}">
+      <Declaration><![CDATA[PROPERTY CylSingle : I_Cylinder]]></Declaration>
+      <Get Name="Get" Id="{b3667cfd-163d-4def-b5aa-d09f4eea5464}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[CylSingle := fbModule1.CylSingle;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="ExecuteProduction" Id="{f5ed84b4-5205-4673-840c-b54a45f43a6e}">
+      <Declaration><![CDATA[METHOD ExecuteProduction]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE _subState OF
+	E_ProductionState.START_MODULE1:
+		fbModule1.ExecuteProduction();
+		_subState := E_ProductionState.WAIT_MODULE1;
+
+	E_ProductionState.WAIT_MODULE1:
+		IF fbModule1.IsIdle THEN
+			_subState := E_ProductionState.COMPLETE;
+		END_IF
+
+	E_ProductionState.COMPLETE:
+		_subState := E_ProductionState.START_MODULE1;
+		_state    := E_MachineState.IDLE;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ExecuteStop" Id="{625873cd-e5a8-45e2-a5d4-ec7e00abff1a}">
+      <Declaration><![CDATA[METHOD ExecuteStop
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbModule1.ExecuteStop();
+IF fbModule1.State = E_MachineState.Idle THEN
+	_state := E_MachineState.IDLE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_Init" Id="{5e033d08-2bf5-4a9e-9fee-a96e1f26be4a}">
+      <Declaration><![CDATA[METHOD FB_Init: BOOL
+VAR_INPUT
+    bInitRetains: BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
+    bInCopyCode: BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)   
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fbFaultManager.RegisterManager(fbModule1.FaultManager);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{df5251c4-e985-4d26-80ea-e5d7bd212fa2}">
+      <Declaration><![CDATA[METHOD Reset : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SUPER^.Reset();
+fbModule1.Reset();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Run" Id="{6dece9ba-03fc-470c-8257-0e862fd9708f}">
+      <Declaration><![CDATA[METHOD Run]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Run all modules first — I/O fresh before logic
+fbModule1.Run();
+
+// Roll up faults
+fbFaultManager.Run();
+IF fbFaultManager.AnyCritical THEN
+	THIS^.Fault();
+END_IF
+
+// Top level state machine
+CASE _state OF
+	E_MachineState.IDLE:
+		;
+	E_MachineState.STARTING,
+	E_MachineState.RUNNING:
+		THIS^.ExecuteProduction();
+	E_MachineState.STOPPING:
+		THIS^.ExecuteStop();
+	E_MachineState.FAULTED:
+		//THIS^.RegisterFault();
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

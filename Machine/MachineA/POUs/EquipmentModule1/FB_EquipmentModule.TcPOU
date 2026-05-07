@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_EquipmentModule" Id="{38d16a8a-62f6-449d-b5b6-b3803c34719b}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_EquipmentModule EXTENDS FB_MachineState
+VAR
+	_init : BOOL;
+	
+    _subState : E_Module1State;
+	
+    DoubleActingCylinderExtendSensor : FB_DigitalInputHardware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
+    DoubleActingCylinderRetractSensor : FB_DigitalInputHardware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
+    DoubleActingCylinderExtendSolenoid : FB_DigitalOutputHardware;
+    DoubleActingCylinderRetractSolenoid : FB_DigitalOutputHardware;
+
+    CylinderDoubleActing : FB_DoubleActingCylinder
+	(
+		iCylExtendedSwitch := DoubleActingCylinderExtendSensor,
+		iCylRetractedSwitch := DoubleActingCylinderRetractSensor,
+		iCylExtend := DoubleActingCylinderExtendSolenoid,
+		iCylRetract := DoubleActingCylinderRetractSolenoid,
+		eSensorMode := E_SensorMode.BOTH,
+		tExtendTimeout := T#3S,
+		tRetractTimeout := T#3S
+	);
+
+    SingleActingCylinderExtendSensor : FB_DigitalInputHardware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
+    SingleActingCylinderRetractSensor : FB_DigitalInputHardware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
+    SingleActingCylinderExtendSolenoid : FB_DigitalOutputHardware;
+
+    CylinderSingleActing : FB_SingleActingCylinder
+	(
+		iCylExtendedSwitch := SingleActingCylinderExtendSensor,
+		iCylRetractedSwitch := SingleActingCylinderRetractSensor,
+		iCylExtend := SingleActingCylinderExtendSolenoid,
+		eSensorMode := E_SensorMode.BOTH,
+		tExtendTimeout := T#3S,
+		tRetractTimeout := T#3S
+	);
+
+    iCylinder : I_Cylinder := CylinderDoubleActing; // Polymorphic reference				
+    iCylinder2 : I_Cylinder := CylinderSingleActing; // Polymorphic reference
+
+    fbAxis : FB_Axis;
+
+    fbFaultCyl1Extend : FB_Fault := (
+        bAutoReset := FALSE,
+        eSeverity := E_FaultSeverity.CRITICAL,
+        nCode := 1001,
+        sMessage := 'Cylinder 1 extend timeout'
+    );
+    fbFaultCyl1Retract : FB_Fault := (
+        bAutoReset := FALSE,
+        eSeverity := E_FaultSeverity.CRITICAL,
+        nCode := 1002,
+        sMessage := 'Cylinder 1 retract timeout'
+    );
+	fbFaultCyl1SensorConflict : FB_Fault := (
+        bAutoReset := FALSE,
+        eSeverity := E_FaultSeverity.CRITICAL,
+        nCode := 1003,
+        sMessage := 'Cylinder 1 sensor conflict'
+    );
+	
+    fbFaultCyl2Extend  : FB_Fault := (
+        bAutoReset := FALSE,
+        eSeverity := E_FaultSeverity.CRITICAL,
+        nCode := 1011,
+        sMessage := 'Cylinder 2 extend timeout'
+    );
+    fbFaultCyl2Retract : FB_Fault := (
+        bAutoReset := FALSE,
+        eSeverity := E_FaultSeverity.CRITICAL,
+        nCode := 1012,
+        sMessage := 'Cylinder 2 retract timeout'
+    );
+    fbFaultCyl2SensorConflict : FB_Fault := (
+        bAutoReset := FALSE,
+        eSeverity := E_FaultSeverity.CRITICAL,
+        nCode := 1013,
+        sMessage := 'Cylinder 2 sensor conflict'
+    );
+	
+	_CylinderSingleActingIsRestracted : BOOL;
+	
+	fbFaultManager : FB_FaultManager;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="AxisConveryor" Id="{01db86d5-1fae-4a89-b2e0-6901896ecd40}">
+      <Declaration><![CDATA[PROPERTY AxisConveryor : I_Axis]]></Declaration>
+      <Get Name="Get" Id="{a3a5387e-7ed8-4ae2-8b7a-790f8d3e8a3c}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[AxisConveryor := fbAxis;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="CylDouble" Id="{ebce16a7-c811-4784-8b4f-26e76274a8aa}">
+      <Declaration><![CDATA[PROPERTY CylDouble : I_Cylinder]]></Declaration>
+      <Get Name="Get" Id="{29de9e16-9d45-4e66-b2fe-978c50a278c1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[CylDouble := CylinderDoubleActing;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="CylSingle" Id="{63420114-3048-4bef-9458-994938ca4880}">
+      <Declaration><![CDATA[PROPERTY CylSingle : I_Cylinder]]></Declaration>
+      <Get Name="Get" Id="{9a492868-34a3-4764-a8c8-e9fc08faae86}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[CylSingle := CylinderSingleActing;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="ExecuteProduction" Id="{6f4e5514-7149-4de1-b003-c9c66d1b37e5}">
+      <Declaration><![CDATA[METHOD ExecuteProduction]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE _subState OF
+    E_Module1State.EXTEND_CYL1:
+        _state := E_MachineState.RUNNING;  // transition from STARTING to RUNNING
+        iCylinder.Extend();
+        fbAxis.MoveAbsolute(fPosition := 100.0, fVelocity := 50.0, fAccel := 10000.0, fDecel := 10000.0);
+        _subState := E_Module1State.WAIT_CYL1;
+
+    E_Module1State.WAIT_CYL1:
+        IF iCylinder.IsExtended AND fbAxis.IsIdle THEN
+            _subState := E_Module1State.EXTEND_CYL2;
+        END_IF
+
+    E_Module1State.EXTEND_CYL2:
+        iCylinder2.Extend();
+        fbAxis.MoveRelative(fDistance := -100.0, fVelocity := 500.0, fAccel := 1000.0, fDecel := 1000.0);
+        _subState := E_Module1State.WAIT_CYL2;
+
+    E_Module1State.WAIT_CYL2:
+        IF iCylinder2.IsExtended AND fbAxis.IsIdle THEN
+            _subState := E_Module1State.RETRACT_ALL;
+        END_IF
+
+    E_Module1State.RETRACT_ALL:
+        iCylinder.Retract();
+        iCylinder2.Retract();
+        IF iCylinder.IsRetracted AND iCylinder2.IsRetracted THEN
+            _subState := E_Module1State.COMPLETE;
+        END_IF
+
+    E_Module1State.COMPLETE:
+        _subState := E_Module1State.EXTEND_CYL1;
+        _state    := E_MachineState.IDLE;  // sequence done — back to IDLE
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ExecuteStop" Id="{6ee72c22-fe68-47b7-a45a-79809af84a74}">
+      <Declaration><![CDATA[METHOD ExecuteStop : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Command cylinders to retract
+//iCylinder.Retract();
+//iCylinder2.Retract();
+
+// Hold axis
+fbAxis.Halt();
+
+// Wait for everything to reach safe state
+(*
+IF iCylinder.IsRetracted AND iCylinder2.IsRetracted AND fbAxis.IsIdle THEN
+	_subState := E_Module1State.EXTEND_CYL1;  // reset sequence
+	_state    := E_MachineState.IDLE;
+END_IF
+*)]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="FaultManager" Id="{6eca5901-6177-4156-84c2-7ef27f673a19}">
+      <Declaration><![CDATA[PROPERTY FaultManager : POINTER TO FB_FaultManager]]></Declaration>
+      <Get Name="Get" Id="{e3e1ddc6-09a4-42c1-8a36-9bf317da1cc4}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[FaultManager := ADR(fbFaultManager);]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="FB_Init" Id="{0978ec87-5bf8-45f4-81e4-84ed87349449}">
+      <Declaration><![CDATA[//FB_Init is always available implicitly and it is used primarily for initialization.
+//The return value is not evaluated. For a specific influence, you can also declare the
+//methods explicitly and provide additional code there with the standard initialization
+//code. You can evaluate the return value.
+METHOD FB_Init: BOOL
+VAR_INPUT
+    bInitRetains: BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
+    bInCopyCode: BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)   
+END_VAR
+VAR
+	ipFault : I_Fault;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CylinderDoubleActing.SetInterlock(_CylinderSingleActingIsRestracted);
+
+// Inject faults into cylinders
+CylinderDoubleActing.SetFaults(
+	ipFaultExtend  := fbFaultCyl1Extend,
+	ipFaultRetract := fbFaultCyl1Retract,
+);
+CylinderSingleActing.SetFaults(
+	ipFaultExtend  := fbFaultCyl2Extend,
+	ipFaultRetract := fbFaultCyl2Retract,
+);
+
+fbFaultManager.RegisterFault(fbFaultCyl1Extend);
+fbFaultManager.RegisterFault(fbFaultCyl1Retract);
+fbFaultManager.RegisterFault(fbFaultCyl1SensorConflict);
+fbFaultManager.RegisterFault(fbFaultCyl2Extend);
+fbFaultManager.RegisterFault(fbFaultCyl2Retract);
+fbFaultManager.RegisterFault(fbFaultCyl2SensorConflict);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{acae461e-3042-4b0d-a6e0-1f950953dddd}">
+      <Declaration><![CDATA[METHOD Reset : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CylDouble.Reset();
+CylSingle.Reset();
+AxisConveryor.Reset();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Run" Id="{d1ecdcb2-ddb2-46de-bca0-86c2216b9294}">
+      <Declaration><![CDATA[METHOD Run]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[iCylinder.Run();
+iCylinder2.Run();
+fbAxis.Run();
+
+_CylinderSingleActingIsRestracted := iCylinder2.IsRetracted;
+
+// Check faults
+fbFaultManager.Run();
+
+CASE _state OF
+	E_MachineState.IDLE:
+		;
+	E_MachineState.RUNNING:
+		THIS^.ExecuteProduction();
+	E_MachineState.STOPPING:
+		THIS^.ExecuteStop();
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

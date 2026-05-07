@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <DUT Name="E_FaultState" Id="{f1221080-4478-453c-9db7-a7fe98a4f450}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_FaultState :
+(
+    INACTIVE,
+    ACTIVE,
+    ACKNOWLEDGED
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

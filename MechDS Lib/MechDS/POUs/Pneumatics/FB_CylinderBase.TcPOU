@@ -3,16 +3,20 @@
   <POU Name="FB_CylinderBase" Id="{eb5ec553-b2e9-4217-b11c-eb9336ba6e3e}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK ABSTRACT FB_CylinderBase IMPLEMENTS I_Cylinder
 VAR
-	_eSensorMode        : E_SensorMode;
-    _state              : E_CylinderState;
-    _faultCode          : E_CylinderFault;
-    _isFaulted          : BOOL;
-    _cmdExtend          : BOOL;
-    _cmdRetract         : BOOL;
-    _timerExtend        : TON;
-    _timerRetract       : TON;
-    _tExtendTimeout     : TIME;
-    _tRetractTimeout    : TIME;
+	_eSensorMode : E_SensorMode;
+    _state : E_CylinderState;
+    _faultCode : E_CylinderFault;
+    _isFaulted : BOOL;
+    _cmdExtend : BOOL;
+    _cmdRetract : BOOL;
+	_refInterlock : REFERENCE TO BOOL;
+    _timerExtend : TON;
+    _timerRetract : TON;
+    _tExtendTimeout : TIME;
+    _tRetractTimeout : TIME;
+	_ipFaultExtend  : I_Fault;
+    _ipFaultRetract : I_Fault;
+	_ipFaultSensorConflict : I_Fault;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -31,7 +35,7 @@ END_VAR]]></Declaration>
       <Declaration><![CDATA[METHOD Extend
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT _isFaulted THEN
+        <ST><![CDATA[IF NOT _isFaulted AND NOT IsInterlocked THEN
 	_cmdExtend  := TRUE;
 	_cmdRetract := FALSE;
 END_IF]]></ST>
@@ -87,6 +91,21 @@ _tRetractTimeout := tRetractTimeout;]]></ST>
         </Implementation>
       </Get>
     </Property>
+    <Property Name="IsInterlocked" Id="{ec303d83-2001-43b0-9587-ef2d9fe2a580}">
+      <Declaration><![CDATA[PROPERTY IsInterlocked : BOOL]]></Declaration>
+      <Get Name="Get" Id="{b7647d39-352c-4f29-a3ca-809b11f9843a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF __ISVALIDREF(_refInterlock) THEN
+	IsInterlocked := _refInterlock;
+ELSE
+	IsInterlocked := FALSE;
+END_IF]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Property Name="IsRetracted" Id="{5ce572c2-d1f0-4b30-a068-71d5ad41aa4f}">
       <Declaration><![CDATA[PROPERTY IsRetracted : BOOL
 ]]></Declaration>
@@ -114,7 +133,7 @@ _timerRetract(IN := FALSE, PT := _tRetractTimeout);]]></ST>
       <Declaration><![CDATA[METHOD Retract
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT _isFaulted THEN
+        <ST><![CDATA[IF NOT _isFaulted AND NOT IsInterlocked THEN
 	_cmdRetract := TRUE;
 	_cmdExtend  := FALSE;
 END_IF]]></ST>
@@ -130,15 +149,18 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Sensor conflict (only relevant when both sensors configured)
-IF _eSensorMode = E_SensorMode.BOTH	AND THIS^.SensorAtExtended() AND THIS^.SensorAtRetracted() THEN
-	THIS^.SetFault(E_CylinderFault.SENSOR_CONFLICT);
+IF _eSensorMode = E_SensorMode.BOTH AND THIS^.SensorAtExtended() AND THIS^.SensorAtRetracted() THEN
+    THIS^.SetFault(E_CylinderFault.SENSOR_CONFLICT);
+    IF _ipFaultExtend <> 0 THEN
+        _ipFaultExtend.Raise();
+    END_IF
 END_IF
 
 IF _isFaulted THEN
-	THIS^.DriveOutputs(bExtend := FALSE, bRetract := FALSE);
-	_timerExtend(IN  := FALSE, PT := _tExtendTimeout);
-	_timerRetract(IN := FALSE, PT := _tRetractTimeout);
-	RETURN;
+    THIS^.DriveOutputs(bExtend := FALSE, bRetract := FALSE);
+    _timerExtend(IN  := FALSE, PT := _tExtendTimeout);
+    _timerRetract(IN := FALSE, PT := _tRetractTimeout);
+    RETURN;
 END_IF
 
 // Determine if a sensor confirms position, or we fall through to timer
@@ -147,66 +169,75 @@ retractDone := THIS^.SensorAtRetracted();
 
 // Timers are the fallback when no sensor covers that direction
 useExtTimer := (_eSensorMode = E_SensorMode.NONE
-				 OR _eSensorMode = E_SensorMode.RETRACT_ONLY);
+             OR _eSensorMode = E_SensorMode.RETRACT_ONLY);
 useRetTimer := (_eSensorMode = E_SensorMode.NONE
-				 OR _eSensorMode = E_SensorMode.EXTEND_ONLY);
+             OR _eSensorMode = E_SensorMode.EXTEND_ONLY);
 
 _timerExtend(IN  := (_state = E_CylinderState.EXTENDING),
-			 PT  := _tExtendTimeout);
+             PT  := _tExtendTimeout);
 _timerRetract(IN := (_state = E_CylinderState.RETRACTING),
-			  PT := _tRetractTimeout);
+              PT := _tRetractTimeout);
 
 // Promote timer expiry to "done" when no sensor is covering that direction
-IF useExtTimer  AND _timerExtend.Q  THEN extendDone  := TRUE; END_IF
-IF useRetTimer  AND _timerRetract.Q THEN retractDone := TRUE; END_IF
+IF useExtTimer AND _timerExtend.Q  THEN extendDone  := TRUE; END_IF
+IF useRetTimer AND _timerRetract.Q THEN retractDone := TRUE; END_IF
 
 // Timeout fault — only fires when a sensor IS configured and move timed out
-IF NOT useExtTimer  AND _timerExtend.Q  THEN
-	THIS^.SetFault(E_CylinderFault.EXTEND_TIMEOUT);
-	RETURN;
+IF NOT useExtTimer AND _timerExtend.Q THEN
+    THIS^.SetFault(E_CylinderFault.EXTEND_TIMEOUT);
+    IF _ipFaultExtend <> 0 THEN
+        _ipFaultExtend.Raise();
+    END_IF
+    RETURN;
 END_IF
-IF NOT useRetTimer  AND _timerRetract.Q THEN
-	THIS^.SetFault(E_CylinderFault.RETRACT_TIMEOUT);
-	RETURN;
+
+IF NOT useRetTimer AND _timerRetract.Q THEN
+    THIS^.SetFault(E_CylinderFault.RETRACT_TIMEOUT);
+    IF _ipFaultRetract <> 0 THEN
+        _ipFaultRetract.Raise();
+    END_IF
+    RETURN;
 END_IF
 
 // State machine
 CASE _state OF
+    E_CylinderState.IDLE:
+        THIS^.DriveOutputs(bExtend := FALSE, bRetract := FALSE);
+        IF _cmdExtend  THEN _state := E_CylinderState.EXTENDING;  END_IF
+        IF _cmdRetract THEN _state := E_CylinderState.RETRACTING; END_IF
 
-	E_CylinderState.IDLE:
-		THIS^.DriveOutputs(bExtend := FALSE, bRetract := FALSE);
-		IF _cmdExtend  THEN _state := E_CylinderState.EXTENDING;  END_IF
-		IF _cmdRetract THEN _state := E_CylinderState.RETRACTING; END_IF
+    E_CylinderState.EXTENDING:
+        THIS^.DriveOutputs(bExtend := TRUE, bRetract := FALSE);
+        IF extendDone THEN
+            _state     := E_CylinderState.EXTENDED;
+            _cmdExtend := FALSE;
+            _timerExtend(IN := FALSE, PT := _tExtendTimeout);
+        END_IF
+        IF _cmdRetract THEN
+            _state := E_CylinderState.RETRACTING;
+        END_IF
 
-	E_CylinderState.EXTENDING:
-		THIS^.DriveOutputs(bExtend := TRUE, bRetract := FALSE);
-		IF extendDone THEN
-			_state      := E_CylinderState.EXTENDED;
-			_cmdExtend  := FALSE;
-			_timerExtend(IN := FALSE, PT := _tExtendTimeout);
-		END_IF
-		IF _cmdRetract THEN
-			_state := E_CylinderState.RETRACTING;
-		END_IF
+    E_CylinderState.EXTENDED:
+        THIS^.DriveOutputs(bExtend := TRUE, bRetract := FALSE);
+        IF _cmdRetract THEN _state := E_CylinderState.RETRACTING; END_IF
 
-	E_CylinderState.EXTENDED:
-		THIS^.DriveOutputs(bExtend := TRUE, bRetract := FALSE);
-		IF _cmdRetract THEN _state := E_CylinderState.RETRACTING; END_IF
+    E_CylinderState.RETRACTING:
+        THIS^.DriveOutputs(bExtend := FALSE, bRetract := TRUE);
+        IF retractDone THEN
+            _state      := E_CylinderState.RETRACTED;
+            _cmdRetract := FALSE;
+            _timerRetract(IN := FALSE, PT := _tRetractTimeout);
+        END_IF
+        IF _cmdExtend THEN
+            _state := E_CylinderState.EXTENDING;
+        END_IF
 
-	E_CylinderState.RETRACTING:
-		THIS^.DriveOutputs(bExtend := FALSE, bRetract := TRUE);
-		IF retractDone THEN
-			_state       := E_CylinderState.RETRACTED;
-			_cmdRetract  := FALSE;
-			_timerRetract(IN := FALSE, PT := _tRetractTimeout);
-		END_IF
-		IF _cmdExtend THEN
-			_state := E_CylinderState.RETRACTING;
-		END_IF
+    E_CylinderState.RETRACTED:
+        THIS^.DriveOutputs(bExtend := FALSE, bRetract := FALSE);
+        IF _cmdExtend THEN _state := E_CylinderState.EXTENDING; END_IF
 
-	E_CylinderState.RETRACTED:
-		THIS^.DriveOutputs(bExtend := FALSE, bRetract := FALSE);
-		IF _cmdExtend THEN _state := E_CylinderState.EXTENDING; END_IF
+    E_CylinderState.FAULTED:
+        THIS^.DriveOutputs(bExtend := FALSE, bRetract := FALSE);
 
 END_CASE]]></ST>
       </Implementation>
@@ -233,7 +264,33 @@ END_VAR]]></Declaration>
 _isFaulted  := TRUE;
 _state      := E_CylinderState.FAULTED;
 _cmdExtend  := FALSE;
-_cmdRetract := FALSE;]]></ST>
+_cmdRetract := FALSE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetFaults" Id="{9dd73ea3-d10d-4ebe-b14c-83792ee5f77e}">
+      <Declaration><![CDATA[METHOD SetFaults
+VAR_INPUT
+    ipFaultExtend  : I_Fault;
+    ipFaultRetract : I_Fault;
+	//ipFaultSensorConflict : I_Fault;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_ipFaultExtend  := ipFaultExtend;
+_ipFaultRetract := ipFaultRetract;
+//_ipFaultSensorConflict := ipFaultSensorConflict;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetInterlock" Id="{4c6efab8-c29d-461a-9844-8cbad3be4bcb}">
+      <Declaration><![CDATA[METHOD SetInterlock
+VAR_INPUT
+	refInterlock : REFERENCE TO BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_refInterlock REF= refInterlock;]]></ST>
       </Implementation>
     </Method>
     <Property Name="State" Id="{3faa36b1-3281-4778-83cd-16b719cb5dcb}">

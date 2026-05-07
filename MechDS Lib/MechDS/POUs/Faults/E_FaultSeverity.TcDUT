@@ -1,17 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
-  <DUT Name="E_ProductionState" Id="{0a97ac1c-5917-4da7-86f0-6c5cb37696e7}">
+  <DUT Name="E_FaultSeverity" Id="{9c6627f8-acd0-45ba-849a-4769941fad65}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'strict'}
 {attribute 'to_string'}
-TYPE E_ProductionState :
+TYPE E_FaultSeverity :
 (
-    EXTEND_CYL1,
-    WAIT_CYL1,
-    EXTEND_CYL2,
-    WAIT_CYL2,
-    RETRACT_ALL,
-    COMPLETE
+    WARNING,
+    FAULT,
+    CRITICAL
 );
 END_TYPE
 ]]></Declaration>
