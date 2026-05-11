@@ -4,14 +4,14 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Machine EXTENDS FB_MachineState
 VAR
     _subState : E_ProductionState;
-	fbModule1 : FB_EquipmentModule;
-	fbModule2 : FB_EquipmentModule;	
+	fbEquipmentModule1 : FB_EquipmentModule;
+	fbEquipmentModule2 : FB_EquipmentModule;	
 		
 	fbMachineLevelFault : FB_Fault := (
         bAutoReset := FALSE,
         eSeverity := E_FaultSeverity.CRITICAL,
         nCode := 1012,
-        sMessage := 'Machine Level Fault'
+        sMessage := 'Safety System Trip'
     );
 	
 	fbFaultManager : FB_FaultManager;
@@ -26,7 +26,7 @@ END_VAR]]></Declaration>
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[AxisConveyor := fbModule1.AxisConveryor;]]></ST>
+          <ST><![CDATA[AxisConveyor := fbEquipmentModule1.AxisConveryor;]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -37,7 +37,7 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[CylDouble := fbModule1.CylDouble;]]></ST>
+          <ST><![CDATA[CylDouble := fbEquipmentModule1.CylDouble;]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -48,7 +48,7 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[CylSingle := fbModule1.CylSingle;]]></ST>
+          <ST><![CDATA[CylSingle := fbEquipmentModule1.CylSingle;]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -57,11 +57,11 @@ END_VAR
       <Implementation>
         <ST><![CDATA[CASE _subState OF
 	E_ProductionState.START_MODULE1:
-		fbModule1.ExecuteProduction();
+		fbEquipmentModule1.ExecuteProduction();
 		_subState := E_ProductionState.WAIT_MODULE1;
 
 	E_ProductionState.WAIT_MODULE1:
-		IF fbModule1.IsIdle THEN
+		IF fbEquipmentModule1.IsIdle THEN
 			_subState := E_ProductionState.COMPLETE;
 		END_IF
 
@@ -77,8 +77,8 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[fbModule1.ExecuteStop();
-IF fbModule1.State = E_MachineState.Idle THEN
+        <ST><![CDATA[fbEquipmentModule1.ExecuteStop();
+IF fbEquipmentModule1.State = E_MachineState.Idle THEN
 	_state := E_MachineState.IDLE;
 END_IF]]></ST>
       </Implementation>
@@ -88,13 +88,16 @@ END_IF]]></ST>
 VAR_INPUT
     bInitRetains: BOOL; // TRUE: the retain variables are initialized (reset warm / reset cold)
     bInCopyCode: BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)   
+END_VAR
+VAR
+	stFaults : ST_EquipmentModuleFaults;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Inject Module Faults Structure into Module FB
-fbModule1._ipModuleFaults := fbMachineLevelFault;
-fbModule1.SetFaults(fbModule1._ipModuleFaults);
+stFaults.ipEquipmentFault1 := fbMachineLevelFault;
+fbEquipmentModule1.SetFaults(stFaults);
 
-fbFaultManager.RegisterManager(fbModule1.FaultManager);]]></ST>
+fbFaultManager.RegisterManager(fbEquipmentModule1.FaultManager);]]></ST>
       </Implementation>
     </Method>
     <Method Name="Reset" Id="{df5251c4-e985-4d26-80ea-e5d7bd212fa2}">
@@ -102,14 +105,14 @@ fbFaultManager.RegisterManager(fbModule1.FaultManager);]]></ST>
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[SUPER^.Reset();
-fbModule1.Reset();]]></ST>
+fbEquipmentModule1.Reset();]]></ST>
       </Implementation>
     </Method>
     <Method Name="Run" Id="{6dece9ba-03fc-470c-8257-0e862fd9708f}">
       <Declaration><![CDATA[METHOD Run]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Run all modules first — I/O fresh before logic
-fbModule1.Run();
+fbEquipmentModule1.Run();
 
 // Roll up faults
 fbFaultManager.Run();
@@ -127,7 +130,7 @@ CASE _state OF
 	E_MachineState.STOPPING:
 		THIS^.ExecuteStop();
 	E_MachineState.FAULTED:
-		//THIS^.RegisterFault();
+		;
 END_CASE]]></ST>
       </Implementation>
     </Method>

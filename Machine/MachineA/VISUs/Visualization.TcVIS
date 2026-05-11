@@ -5,7 +5,7 @@
       <Data>
         <o xml:space="preserve" t="VisualObject">
           <n n="LastVisuLanguageModelEntry" />
-          <v n="UniqueIdGenerator">"144"</v>
+          <v n="UniqueIdGenerator">"153"</v>
           <o n="VisualElemList" t="VisualElemList">
             <l n="VisualElementList" t="VisualElemCollection" cet="GenericVisualElem">
               <o>
@@ -288,7 +288,7 @@
                     </o>
                     <o>
                       <v n="Id">743958181L</v>
-                      <v n="Value">"MAIN.fbMachine.fbModule1.CylinderDoubleActing._cmdRetract"</v>
+                      <v n="Value">"MAIN.fbMachine.fbEquipmentModule1.CylinderDoubleActing._cmdRetract"</v>
                     </o>
                   </l>
                 </o>
@@ -390,7 +390,7 @@
                     </o>
                     <o>
                       <v n="Id">743958181L</v>
-                      <v n="Value">"MAIN.fbMachine.fbModule1.CylinderDoubleActing._cmdExtend"</v>
+                      <v n="Value">"MAIN.fbMachine.fbEquipmentModule1.CylinderDoubleActing._cmdExtend"</v>
                     </o>
                     <o>
                       <v n="Id">2597686782L</v>
@@ -500,7 +500,7 @@
                     </o>
                     <o>
                       <v n="Id">743958181L</v>
-                      <v n="Value">"(MAIN.fbMachine.fbModule1.CylinderDoubleActing._state=E_CylinderState.RETRACTED)"</v>
+                      <v n="Value">"(MAIN.fbMachine.fbEquipmentModule1.CylinderDoubleActing._state=E_CylinderState.RETRACTED)"</v>
                     </o>
                   </l>
                 </o>
@@ -602,7 +602,7 @@
                     </o>
                     <o>
                       <v n="Id">743958181L</v>
-                      <v n="Value">"(MAIN.fbMachine.fbModule1.CylinderDoubleActing._state=E_CylinderState.EXTENDED)"</v>
+                      <v n="Value">"(MAIN.fbMachine.fbEquipmentModule1.CylinderDoubleActing._state=E_CylinderState.EXTENDED)"</v>
                     </o>
                     <o>
                       <v n="Id">2597686782L</v>
@@ -904,7 +904,7 @@
                     </o>
                     <o>
                       <v n="Id">743958181L</v>
-                      <v n="Value">"MAIN.fbMachine.fbModule1.CylinderSingleActing._cmdExtend"</v>
+                      <v n="Value">"MAIN.fbMachine.fbEquipmentModule1.CylinderSingleActing._cmdExtend"</v>
                     </o>
                     <o>
                       <v n="Id">2597686782L</v>
@@ -1014,7 +1014,7 @@
                     </o>
                     <o>
                       <v n="Id">743958181L</v>
-                      <v n="Value">"(MAIN.fbMachine.fbModule1.CylinderSingleActing._state=E_CylinderState.RETRACTED)"</v>
+                      <v n="Value">"(MAIN.fbMachine.fbEquipmentModule1.CylinderSingleActing._state=E_CylinderState.RETRACTED)"</v>
                     </o>
                   </l>
                 </o>
@@ -1116,7 +1116,7 @@
                     </o>
                     <o>
                       <v n="Id">743958181L</v>
-                      <v n="Value">"(MAIN.fbMachine.fbModule1.CylinderSingleActing._state=E_CylinderState.EXTENDED)"</v>
+                      <v n="Value">"(MAIN.fbMachine.fbEquipmentModule1.CylinderSingleActing._state=E_CylinderState.EXTENDED)"</v>
                     </o>
                     <o>
                       <v n="Id">2597686782L</v>
@@ -2391,7 +2391,7 @@
                     </o>
                     <o>
                       <v n="Id">2216112L</v>
-                      <v n="Value">"MAIN.fbMachine.fbModule1.fbAxis._axis.NcToPlc.ActPos"</v>
+                      <v n="Value">"MAIN.fbMachine.fbEquipmentModule1.fbAxis1._axis.NcToPlc.ActPos"</v>
                     </o>
                     <o>
                       <v n="Id">2597686782L</v>
@@ -3859,7 +3859,7 @@
                     </o>
                     <o>
                       <v n="Id">743958181L</v>
-                      <v n="Value">"MAIN.fbMachine.fbModule1.CylinderDoubleActing._isFaulted"</v>
+                      <v n="Value">"MAIN.fbMachine.fbEquipmentModule1.CylinderDoubleActing._isFaulted"</v>
                     </o>
                   </l>
                 </o>
@@ -4103,7 +4103,7 @@
                     </o>
                     <o>
                       <v n="Id">743958181L</v>
-                      <v n="Value">"MAIN.fbMachine.fbModule1.CylinderSingleActing._isFaulted"</v>
+                      <v n="Value">"MAIN.fbMachine.fbEquipmentModule1.CylinderSingleActing._isFaulted"</v>
                     </o>
                   </l>
                 </o>

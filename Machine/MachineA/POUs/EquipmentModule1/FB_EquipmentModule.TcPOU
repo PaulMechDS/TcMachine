@@ -23,6 +23,8 @@ VAR
 	);
 
 	// Cylinder 2
+	_CylinderSingleActingIsInterlocked : BOOL; // Needed because you cant pass a Method as an interface
+		
     SingleActingCylinderExtendSensor : FB_DigitalInputHardware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
     SingleActingCylinderRetractSensor : FB_DigitalInputHardware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
     SingleActingCylinderExtendSolenoid : FB_DigitalOutputHardware;
@@ -36,8 +38,6 @@ VAR
 		tExtendTimeout := T#3S,
 		tRetractTimeout := T#3S
 	);
-
-	_CylinderSingleActingIsInterlocked : BOOL;
 	
 	// Cylinder Interfaces (not necessarily needed but makes changes easier) 
     iCylinder : I_Cylinder := CylinderDoubleActing; // Polymorphic reference				
@@ -101,7 +101,7 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[AxisConveryor := fbAxis;]]></ST>
+          <ST><![CDATA[AxisConveryor := fbAxis1;]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -134,21 +134,21 @@ END_VAR
     E_Module1State.EXTEND_CYL1:
         _state := E_MachineState.RUNNING;  // transition from STARTING to RUNNING
         iCylinder.Extend();
-        fbAxis.MoveAbsolute(fPosition := 100.0, fVelocity := 50.0, fAccel := 10000.0, fDecel := 10000.0);
+        fbAxis1.MoveAbsolute(fPosition := 100.0, fVelocity := 50.0, fAccel := 10000.0, fDecel := 10000.0);
         _subState := E_Module1State.WAIT_CYL1;
 
     E_Module1State.WAIT_CYL1:
-        IF iCylinder.IsExtended AND fbAxis.IsIdle THEN
+        IF iCylinder.IsExtended AND fbAxis1.IsIdle THEN
             _subState := E_Module1State.EXTEND_CYL2;
         END_IF
 
     E_Module1State.EXTEND_CYL2:
         iCylinder2.Extend();
-        fbAxis.MoveRelative(fDistance := -100.0, fVelocity := 500.0, fAccel := 1000.0, fDecel := 1000.0);
+        fbAxis1.MoveRelative(fDistance := -100.0, fVelocity := 500.0, fAccel := 1000.0, fDecel := 1000.0);
         _subState := E_Module1State.WAIT_CYL2;
 
     E_Module1State.WAIT_CYL2:
-        IF iCylinder2.IsExtended AND fbAxis.IsIdle THEN
+        IF iCylinder2.IsExtended AND fbAxis1.IsIdle THEN
             _subState := E_Module1State.RETRACT_ALL;
         END_IF
 
@@ -176,7 +176,7 @@ END_VAR
 //iCylinder2.Retract();
 
 // Hold axis
-fbAxis.Halt();
+fbAxis1.Halt();
 
 // Wait for everything to reach safe state
 (*
@@ -246,8 +246,8 @@ AxisConveryor.Reset();]]></ST>
       <Declaration><![CDATA[METHOD Run]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Raise Equipment Level Faults
-IF _ipEquipmentLevelFault <> 0 THEN
-	_ipEquipmentLevelFault.Raise();
+IF _ipModuleFaults.ipEquipmentFault1 <> 0 THEN
+	_ipModuleFaults.ipEquipmentFault1.Raise();
 END_IF
 
 iCylinder.Run();
@@ -273,11 +273,11 @@ END_CASE]]></ST>
     <Method Name="SetFaults" Id="{c48e186f-1f83-4457-a871-b56f04de4fac}">
       <Declaration><![CDATA[METHOD SetFaults
 VAR_INPUT
-	stEquipmentFaults : ST_EquipmentModuleFaults;
+	stFaults : ST_EquipmentModuleFaults;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_ipModuleFaults  := stEquipmentFaults.ipEquipmentFault1;
+        <ST><![CDATA[_ipModuleFaults.ipEquipmentFault1  := stFaults.ipEquipmentFault1;
 ]]></ST>
       </Implementation>
     </Method>

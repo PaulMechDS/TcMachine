@@ -10,7 +10,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{8499D008-8861-4240-8152-14B8CE90DC8E}" Name="MechDS_Test" PrjFilePath="MechDS_Test\MechDS_Test.plcproj" TmcFilePath="MechDS_Test\MechDS_Test.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{A0D3F21A-BF4F-33F6-231E-7D7E55F30163}" TmcPath="MechDS_Test\MechDS_Test.tmc">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{C79F1F8E-1014-C331-F263-5BAD3714D4F3}" TmcPath="MechDS_Test\MechDS_Test.tmc">
 					<Name>MechDS_Test Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
