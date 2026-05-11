@@ -3,10 +3,9 @@
   <POU Name="FB_EquipmentModule" Id="{38d16a8a-62f6-449d-b5b6-b3803c34719b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_EquipmentModule EXTENDS FB_MachineState
 VAR
-	_init : BOOL;
-	
     _subState : E_Module1State;
 	
+	// Cylinder 1
     DoubleActingCylinderExtendSensor : FB_DigitalInputHardware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
     DoubleActingCylinderRetractSensor : FB_DigitalInputHardware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
     DoubleActingCylinderExtendSolenoid : FB_DigitalOutputHardware;
@@ -23,6 +22,7 @@ VAR
 		tRetractTimeout := T#3S
 	);
 
+	// Cylinder 2
     SingleActingCylinderExtendSensor : FB_DigitalInputHardware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
     SingleActingCylinderRetractSensor : FB_DigitalInputHardware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
     SingleActingCylinderExtendSolenoid : FB_DigitalOutputHardware;
@@ -37,11 +37,17 @@ VAR
 		tRetractTimeout := T#3S
 	);
 
+	_CylinderSingleActingIsInterlocked : BOOL;
+	
+	// Cylinder Interfaces (not necessarily needed but makes changes easier) 
     iCylinder : I_Cylinder := CylinderDoubleActing; // Polymorphic reference				
     iCylinder2 : I_Cylinder := CylinderSingleActing; // Polymorphic reference
 
-    fbAxis : FB_Axis;
+	// Axes
+    fbAxis1 : FB_Axis;
+	fbAxis2 : FB_Axis;
 
+	// Faults
     fbFaultCyl1Extend : FB_Fault := (
         bAutoReset := FALSE,
         eSeverity := E_FaultSeverity.CRITICAL,
@@ -80,7 +86,7 @@ VAR
         sMessage := 'Cylinder 2 sensor conflict'
     );
 	
-	_CylinderSingleActingIsRestracted : BOOL;
+	_ipModuleFaults  : ST_EquipmentModuleFaults;
 	
 	fbFaultManager : FB_FaultManager;
 END_VAR
@@ -206,7 +212,7 @@ VAR
 	stFaults : ST_CylinderFaults;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CylinderDoubleActing.SetInterlock(_CylinderSingleActingIsRestracted);
+        <ST><![CDATA[CylinderSingleActing.SetInterlock(_CylinderSingleActingIsInterlocked);
 
 // Inject faults into cylinders
 stFaults.ipFaultExtend := fbFaultCyl1Extend;
@@ -239,11 +245,17 @@ AxisConveryor.Reset();]]></ST>
     <Method Name="Run" Id="{d1ecdcb2-ddb2-46de-bca0-86c2216b9294}">
       <Declaration><![CDATA[METHOD Run]]></Declaration>
       <Implementation>
-        <ST><![CDATA[iCylinder.Run();
-iCylinder2.Run();
-fbAxis.Run();
+        <ST><![CDATA[// Raise Equipment Level Faults
+IF _ipEquipmentLevelFault <> 0 THEN
+	_ipEquipmentLevelFault.Raise();
+END_IF
 
-_CylinderSingleActingIsRestracted := iCylinder2.IsRetracted;
+iCylinder.Run();
+iCylinder2.Run();
+fbAxis1.Run();
+fbAxis2.Run();
+
+_CylinderSingleActingIsInterlocked := iCylinder.IsRetracted;
 
 // Check faults
 fbFaultManager.Run();
@@ -256,6 +268,17 @@ CASE _state OF
 	E_MachineState.STOPPING:
 		THIS^.ExecuteStop();
 END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetFaults" Id="{c48e186f-1f83-4457-a871-b56f04de4fac}">
+      <Declaration><![CDATA[METHOD SetFaults
+VAR_INPUT
+	stEquipmentFaults : ST_EquipmentModuleFaults;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_ipModuleFaults  := stEquipmentFaults.ipEquipmentFault1;
+]]></ST>
       </Implementation>
     </Method>
   </POU>

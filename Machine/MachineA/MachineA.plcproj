@@ -31,6 +31,9 @@
     <Compile Include="POUs\EquipmentModule1\FB_EquipmentModule.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\EquipmentModule1\ST_EquipmentModuleFaults.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\Machine\E_ProductionState.TcDUT">
       <SubType>Code</SubType>
     </Compile>

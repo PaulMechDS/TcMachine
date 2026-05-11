@@ -21,6 +21,16 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"77"</v>
+              <v n="TextDefault">"Ext"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"96"</v>
+              <v n="TextDefault">"Ext'd"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"384"</v>
               <v n="TextDefault">"Extend"</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -68,6 +78,11 @@
             <o>
               <v n="TextID">"684"</v>
               <v n="TextDefault">"Reset"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"101"</v>
+              <v n="TextDefault">"Ret'd"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>

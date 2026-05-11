@@ -5,6 +5,15 @@
 VAR
     _subState : E_ProductionState;
 	fbModule1 : FB_EquipmentModule;
+	fbModule2 : FB_EquipmentModule;	
+		
+	fbMachineLevelFault : FB_Fault := (
+        bAutoReset := FALSE,
+        eSeverity := E_FaultSeverity.CRITICAL,
+        nCode := 1012,
+        sMessage := 'Machine Level Fault'
+    );
+	
 	fbFaultManager : FB_FaultManager;
 END_VAR]]></Declaration>
     <Implementation>
@@ -81,7 +90,11 @@ VAR_INPUT
     bInCopyCode: BOOL;  // TRUE: the instance will be copied to the copy code afterward (online change)   
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[fbFaultManager.RegisterManager(fbModule1.FaultManager);]]></ST>
+        <ST><![CDATA[// Inject Module Faults Structure into Module FB
+fbModule1._ipModuleFaults := fbMachineLevelFault;
+fbModule1.SetFaults(fbModule1._ipModuleFaults);
+
+fbFaultManager.RegisterManager(fbModule1.FaultManager);]]></ST>
       </Implementation>
     </Method>
     <Method Name="Reset" Id="{df5251c4-e985-4d26-80ea-e5d7bd212fa2}">
