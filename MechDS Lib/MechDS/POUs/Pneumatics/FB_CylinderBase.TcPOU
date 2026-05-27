@@ -150,7 +150,7 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Sensor conflict (only relevant when both sensors configured)
 IF _eSensorMode = E_SensorMode.BOTH AND THIS^.SensorAtExtended() AND THIS^.SensorAtRetracted() THEN
-    THIS^.SetFault(E_CylinderFault.SENSOR_CONFLICT);
+    THIS^.SetFaultState(E_CylinderFault.SENSOR_CONFLICT);
 END_IF
 
 IF _isFaulted THEN
@@ -193,9 +193,9 @@ IF useRetTimer AND _timerRetract.Q THEN retractDone := TRUE; END_IF
 
 // Timeout fault — only fires when a sensor IS configured and move timed out
 IF (NOT useExtTimer AND _timerExtend.Q) THEN
-    THIS^.SetFault(E_CylinderFault.EXTEND_TIMEOUT);
+    THIS^.SetFaultState(E_CylinderFault.EXTEND_TIMEOUT);
 ELSIF (NOT useRetTimer AND _timerRetract.Q) THEN
-    THIS^.SetFault(E_CylinderFault.RETRACT_TIMEOUT);
+    THIS^.SetFaultState(E_CylinderFault.RETRACT_TIMEOUT);
 END_IF
 
 // State machine
@@ -253,20 +253,6 @@ END_CASE]]></ST>
         <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
-    <Method Name="SetFault" Id="{856d1e9e-5f63-478a-9390-ab8aaef7de03}">
-      <Declaration><![CDATA[METHOD PROTECTED SetFault
-VAR_INPUT
-    fault : E_CylinderFault;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[_faultCode  := fault;
-_isFaulted  := TRUE;
-_state      := E_CylinderState.FAULTED;
-_cmdExtend  := FALSE;
-_cmdRetract := FALSE;
-]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="SetFaults" Id="{9dd73ea3-d10d-4ebe-b14c-83792ee5f77e}">
       <Declaration><![CDATA[METHOD SetFaults
 VAR_INPUT
@@ -278,6 +264,20 @@ END_VAR
         <ST><![CDATA[_ipFaultExtend  := stCylinderFaults.ipFaultExtend;
 _ipFaultRetract := stCylinderFaults.ipFaultRetract;
 _ipFaultSensorConflict := stCylinderFaults.ipFaultSensorConflict;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetFaultState" Id="{856d1e9e-5f63-478a-9390-ab8aaef7de03}">
+      <Declaration><![CDATA[METHOD PROTECTED SetFaultState
+VAR_INPUT
+    fault : E_CylinderFault;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_faultCode := fault;
+_isFaulted := TRUE;
+_state := E_CylinderState.FAULTED;
+_cmdExtend := FALSE;
+_cmdRetract := FALSE;
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="SetInterlock" Id="{4c6efab8-c29d-461a-9844-8cbad3be4bcb}">

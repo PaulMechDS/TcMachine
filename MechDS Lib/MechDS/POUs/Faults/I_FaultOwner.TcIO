@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <Itf Name="I_FaultOwner" Id="{6c637abf-a279-46cd-887e-a3c162b12751}">
+    <Declaration><![CDATA[INTERFACE I_FaultOwner
+]]></Declaration>
+    <Method Name="RegisterFaults" Id="{81dae3c2-ae86-456e-96e9-efe9e863f246}">
+      <Declaration><![CDATA[METHOD RegisterFaults
+VAR_INPUT
+	ipManager : I_FaultManager;
+END_VAR]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

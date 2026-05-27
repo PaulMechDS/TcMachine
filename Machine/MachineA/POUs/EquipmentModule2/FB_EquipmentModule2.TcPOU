@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_EquipmentModule2" Id="{f348a182-1dfc-44ff-b685-e953e899202e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_EquipmentModule2 EXTENDS FB_MachineState IMPLEMENTS I_FaultOwner
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	fbVFD : I_VFD;
+	
+	// Equiplevel Faults
+    fbFaultSequenceTimeout : FB_Fault := (
+        bAutoReset := FALSE,
+        eSeverity := E_FaultSeverity.CRITICAL,
+        nCode := 9999,
+        sMessage := 'Equipment Module 2 Sequence Timeout'
+    );
+	
+	_ipModuleFaults  : ST_EquipmentModuleFaults;
+	
+	fbFaultManager : FB_FaultManager;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

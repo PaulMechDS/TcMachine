@@ -4,14 +4,14 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Fault IMPLEMENTS I_Fault
 VAR_INPUT
     bAutoReset : BOOL;
-    eSeverity  : E_FaultSeverity;
-    nCode      : UDINT;
-    sMessage   : STRING;
+    eSeverity : E_FaultSeverity;
+    nCode : UDINT;
+    sMessage : STRING;
 END_VAR
 VAR
-    _state        : E_FaultState;
-    _timestamp    : DATE_AND_TIME;
-    _autoReset    : BOOL;  // clears automatically when condition gone
+    _state : E_FaultState;
+    _timestamp : DATE_AND_TIME;
+    _autoReset : BOOL;  // clears automatically when condition gone
 END_VAR
 ]]></Declaration>
     <Implementation>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <DUT Name="E_EquipmentModule2State" Id="{69f9b0e1-e274-44fb-a2d5-b477a22decb2}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_EquipmentModule2State :
+(
+	START_VFD,
+	MOVE_ROBOT_TO_PICK,
+	WAIT_FOR_INPUT_PICK_POSITION_SENSOR,
+	ROBOT_GRIP,
+	CHECK_GRIPPER_FULL,
+	MOVE_TO_PLACE,
+	ROBOT_RELEASE,
+	CHECK_GRIPPER_EMPTY,
+	CHECK_PLACE_POSITION_SENSOR_IS_ACTIVE,
+	ROBOT_RETURN_TO_WAIT_POSITION
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

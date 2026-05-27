@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="FB_VFD" Id="{e3146165-2d92-48d9-bb4d-c49f0be6f93e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_VFD IMPLEMENTS I_VFD
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_isEnabled : BOOL;
+	_isFaulted : BOOL;
+	_isReady : BOOL;
+	_isRunning : BOOL;
+	_actualSpeed : REAL;
+	_setSpeed : REAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="ActualSpeed" Id="{2369eb8e-5ca4-41ca-994e-2ad594e2edfe}">
+      <Declaration><![CDATA[{warning 'Add property implementation'}
+PROPERTY ActualSpeed : REAL
+]]></Declaration>
+      <Get Name="Get" Id="{0b516756-c1a1-41ac-8985-3db6c854bb0a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="IsEnabled" Id="{454bcf80-b2a5-4403-90d7-ee9e62232962}">
+      <Declaration><![CDATA[{warning 'Add property implementation'}
+PROPERTY IsEnabled : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{4c4a1c7c-e4ba-420d-a225-a7518619ebc3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="IsFaulted" Id="{52249d53-cbfd-4842-a335-ce4c1fb3b4e0}">
+      <Declaration><![CDATA[{warning 'Add property implementation'}
+PROPERTY IsFaulted : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{10d1e30a-37df-446b-baa7-15aaec41fc65}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="IsReady" Id="{07307147-bf4d-4f27-a01c-2f66389190cd}">
+      <Declaration><![CDATA[{warning 'Add property implementation'}
+PROPERTY IsReady : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{b204262c-eae5-4c31-a402-a2d6498194ba}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="IsRunning" Id="{2239d201-f40b-47b8-af00-cf1022618bff}">
+      <Declaration><![CDATA[{warning 'Add property implementation'}
+PROPERTY IsRunning : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{1ce5b517-f60d-460a-855d-b513a626eebb}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Run" Id="{6bc93bfc-7e49-46ac-93db-0581388dc7a5}">
+      <Declaration><![CDATA[METHOD Run : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetSpeed" Id="{8bf524bb-29ab-4f0b-a767-0048eb3149ef}">
+      <Declaration><![CDATA[{warning 'Add method implementation '}
+METHOD SetSpeed : BOOL
+VAR_INPUT
+	Speed	: REAL; // RPM
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_setSpeed := Speed;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Stop" Id="{68e02e5a-8753-4d99-8dcb-47c821023d62}">
+      <Declaration><![CDATA[{warning 'Add method implementation '}
+METHOD Stop : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

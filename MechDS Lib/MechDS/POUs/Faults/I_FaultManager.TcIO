@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <Itf Name="I_FaultManager" Id="{bf107bcd-8480-4ebb-8472-b78319b62bd9}">
+    <Declaration><![CDATA[INTERFACE I_FaultManager
+]]></Declaration>
+    <Property Name="AnyActive" Id="{671a59e6-6ee4-4352-8f4a-82b54d2034ba}">
+      <Declaration><![CDATA[PROPERTY AnyActive : BOOL]]></Declaration>
+      <Get Name="Get" Id="{ca5733af-397b-403a-997d-a68785495b43}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="AnyCritical" Id="{82946cf3-ed98-4e55-b557-a493a5b59f31}">
+      <Declaration><![CDATA[PROPERTY AnyCritical : BOOL]]></Declaration>
+      <Get Name="Get" Id="{2808eca1-9929-49b4-9c7a-199d9525ceab}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="RegisterFault" Id="{33d36459-4b03-4237-9366-c50d0f569325}">
+      <Declaration><![CDATA[METHOD RegisterFault
+VAR_INPUT
+    ipFault : I_Fault;
+END_VAR]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

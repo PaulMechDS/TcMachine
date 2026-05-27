@@ -27,9 +27,9 @@ END_VAR
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>
-    <Property Name="IsAcknowledged" Id="{b3bcfb93-3977-456f-9713-b076902a011a}">
+    <Property Name="IsAcknowledged" Id="{4fb3a720-70d9-4d1f-86fe-9958ca79b602}">
       <Declaration><![CDATA[PROPERTY IsAcknowledged : BOOL]]></Declaration>
-      <Get Name="Get" Id="{93a7c554-8ea7-463a-996c-2ff0034f0b49}">
+      <Get Name="Get" Id="{da348f12-8977-4e36-9287-5f92446d58ad}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
     </Property>

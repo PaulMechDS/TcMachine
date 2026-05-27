@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <Itf Name="I_VFD" Id="{1986e413-ed0b-4c0a-9327-e5f1f9e5e872}">
+    <Declaration><![CDATA[INTERFACE I_VFD
+]]></Declaration>
+    <Property Name="ActualSpeed" Id="{41aff45c-0f71-4319-96da-dc07d0fa80e6}">
+      <Declaration><![CDATA[PROPERTY ActualSpeed : REAL]]></Declaration>
+      <Get Name="Get" Id="{63038f83-d594-44ba-9c6b-ea77ed5d8ca3}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="IsEnabled" Id="{8be827aa-4637-45f9-8c1e-395280fdd8fb}">
+      <Declaration><![CDATA[PROPERTY IsEnabled : BOOL]]></Declaration>
+      <Get Name="Get" Id="{49f60643-8135-4755-ae26-cf562bf2c888}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="IsFaulted" Id="{c121bdd7-d062-4411-b271-c636c5b109af}">
+      <Declaration><![CDATA[PROPERTY IsFaulted : BOOL]]></Declaration>
+      <Get Name="Get" Id="{e7ab9a67-b5df-4ce3-80fb-6cfc818e8adf}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="IsReady" Id="{f5eb5c22-0e57-48a1-bc99-e6b6dbf1dc1f}">
+      <Declaration><![CDATA[PROPERTY IsReady : BOOL]]></Declaration>
+      <Get Name="Get" Id="{e12839e2-1119-4e89-a93e-28c1c32cf2d8}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="IsRunning" Id="{6b930a1a-dc91-4b2d-ad80-14a3631d4e1b}">
+      <Declaration><![CDATA[PROPERTY IsRunning : BOOL]]></Declaration>
+      <Get Name="Get" Id="{fd651c87-70ed-4f24-b913-520062d5d6b2}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="Run" Id="{7e087422-85af-4d3e-a89c-47fc06b9aee9}">
+      <Declaration><![CDATA[METHOD Run : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="SetSpeed" Id="{d20f41ae-b4dc-45d6-9c23-da9e8175b5e4}">
+      <Declaration><![CDATA[METHOD SetSpeed : BOOL
+VAR_INPUT
+	Speed : REAL; // RPM
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="Stop" Id="{a494d96a-8882-4dfe-b3f6-466b42dbe577}">
+      <Declaration><![CDATA[METHOD Stop : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

@@ -1006,7 +1006,7 @@ External Setpoint Generation:
 		</Motion>
 		<Plc>
 			<Project GUID="{5DC2B562-B20E-4715-A51D-687C454ABBED}" Name="MachineA" PrjFilePath="MachineA\MachineA.plcproj" TmcFilePath="MachineA\MachineA.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{CAA351D4-6C8E-40CF-7661-87421A76297B}" TmcPath="MachineA\MachineA.tmc">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{3B2F6899-1480-7B01-19D8-A898F5289E43}" TmcPath="MachineA\MachineA.tmc">
 					<Name>MachineA Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="2" AreaNo="1">
@@ -1029,26 +1029,6 @@ External Setpoint Generation:
 						</Var>
 						<Var>
 							<Name>MAIN.fbMachine.fbEquipmentModule1.fbAxis2._axis.PlcToNc</Name>
-							<Type GUID="{96B75FEB-2D84-43BE-A3EC-D9A681F27D52}" Namespace="MC">PLCTONC_AXIS_REF</Type>
-						</Var>
-						<Var>
-							<Name>MAIN.fbMachine.fbEquipmentModule2.DoubleActingCylinderExtendSolenoid.HardwareOutput</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>MAIN.fbMachine.fbEquipmentModule2.DoubleActingCylinderRetractSolenoid.HardwareOutput</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>MAIN.fbMachine.fbEquipmentModule2.SingleActingCylinderExtendSolenoid.HardwareOutput</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>MAIN.fbMachine.fbEquipmentModule2.fbAxis1._axis.PlcToNc</Name>
-							<Type GUID="{96B75FEB-2D84-43BE-A3EC-D9A681F27D52}" Namespace="MC">PLCTONC_AXIS_REF</Type>
-						</Var>
-						<Var>
-							<Name>MAIN.fbMachine.fbEquipmentModule2.fbAxis2._axis.PlcToNc</Name>
 							<Type GUID="{96B75FEB-2D84-43BE-A3EC-D9A681F27D52}" Namespace="MC">PLCTONC_AXIS_REF</Type>
 						</Var>
 					</Vars>
@@ -1076,30 +1056,6 @@ External Setpoint Generation:
 						</Var>
 						<Var>
 							<Name>MAIN.fbMachine.fbEquipmentModule1.fbAxis2._axis.NcToPlc</Name>
-							<Type GUID="{25521FAA-EA5F-4C7F-8864-BBCCDACD2E98}" Namespace="MC">NCTOPLC_AXIS_REF</Type>
-						</Var>
-						<Var>
-							<Name>MAIN.fbMachine.fbEquipmentModule2.DoubleActingCylinderExtendSensor.HardwareInput</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>MAIN.fbMachine.fbEquipmentModule2.DoubleActingCylinderRetractSensor.HardwareInput</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>MAIN.fbMachine.fbEquipmentModule2.SingleActingCylinderExtendSensor.HardwareInput</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>MAIN.fbMachine.fbEquipmentModule2.SingleActingCylinderRetractSensor.HardwareInput</Name>
-							<Type>BOOL</Type>
-						</Var>
-						<Var>
-							<Name>MAIN.fbMachine.fbEquipmentModule2.fbAxis1._axis.NcToPlc</Name>
-							<Type GUID="{25521FAA-EA5F-4C7F-8864-BBCCDACD2E98}" Namespace="MC">NCTOPLC_AXIS_REF</Type>
-						</Var>
-						<Var>
-							<Name>MAIN.fbMachine.fbEquipmentModule2.fbAxis2._axis.NcToPlc</Name>
 							<Type GUID="{25521FAA-EA5F-4C7F-8864-BBCCDACD2E98}" Namespace="MC">NCTOPLC_AXIS_REF</Type>
 						</Var>
 					</Vars>

@@ -25,13 +25,19 @@
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\EquipmentModule1\E_Module1State.TcDUT">
+    <Compile Include="POUs\EquipmentModule1\E_EquipmentModule1State.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\EquipmentModule1\FB_EquipmentModule.TcPOU">
+    <Compile Include="POUs\EquipmentModule1\FB_EquipmentModule1.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\EquipmentModule1\ST_EquipmentModuleFaults.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\EquipmentModule2\E_EquipmentModule2State.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\EquipmentModule2\FB_EquipmentModule2.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\Machine\E_ProductionState.TcDUT">
@@ -62,6 +68,7 @@
     <Folder Include="GVLs" />
     <Folder Include="POUs\EquipmentModule1" />
     <Folder Include="POUs\Machine" />
+    <Folder Include="POUs\EquipmentModule2" />
     <Folder Include="VISUs" />
     <Folder Include="POUs" />
   </ItemGroup>
@@ -128,6 +135,10 @@
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Module</Namespace>
       <SystemLibrary>true</SystemLibrary>
+    </PlaceholderReference>
+    <PlaceholderReference Include="TcLog">
+      <DefaultResolution>TcLog, * (Benedikt Geisler)</DefaultResolution>
+      <Namespace>TcLogLib</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="VisuSymbols">
       <DefaultResolution>VisuSymbols, 4.5.0.0 (System)</DefaultResolution>

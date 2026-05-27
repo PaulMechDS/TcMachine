@@ -6,9 +6,10 @@
 {attribute 'to_string'}
 TYPE E_FaultSeverity :
 (
-    WARNING,
-    FAULT,
-    CRITICAL
+	CRITICAL,
+	MINOR,
+	MAJOR,
+    WARNING
 );
 END_TYPE
 ]]></Declaration>

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
-  <POU Name="FB_EquipmentModule" Id="{38d16a8a-62f6-449d-b5b6-b3803c34719b}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_EquipmentModule EXTENDS FB_MachineState
+  <POU Name="FB_EquipmentModule1" Id="{38d16a8a-62f6-449d-b5b6-b3803c34719b}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_EquipmentModule1 EXTENDS FB_MachineState IMPLEMENTS I_FaultOwner
 VAR
-    _subState : E_Module1State;
+    _subState : E_EquipmentModule1State;
 	
 	// Cylinder 1
     DoubleActingCylinderExtendSensor : FB_DigitalInputHardware(DebounceOnTime := T#0MS, DebounceOffTime := T#0MS, Invert := FALSE);
@@ -86,6 +86,14 @@ VAR
         sMessage := 'Cylinder 2 sensor conflict'
     );
 	
+	// Equiplevel Faults
+    fbFaultSequenceTimeout : FB_Fault := (
+        bAutoReset := FALSE,
+        eSeverity := E_FaultSeverity.CRITICAL,
+        nCode := 9999,
+        sMessage := 'Equipment Module 1 Sequence Timeout'
+    );
+	
 	_ipModuleFaults  : ST_EquipmentModuleFaults;
 	
 	fbFaultManager : FB_FaultManager;
@@ -131,36 +139,36 @@ END_VAR
       <Declaration><![CDATA[METHOD ExecuteProduction]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE _subState OF
-    E_Module1State.EXTEND_CYL1:
+    E_EquipmentModule1State.EXTEND_CYL1:
         _state := E_MachineState.RUNNING;  // transition from STARTING to RUNNING
         iCylinder.Extend();
         fbAxis1.MoveAbsolute(fPosition := 100.0, fVelocity := 50.0, fAccel := 10000.0, fDecel := 10000.0);
-        _subState := E_Module1State.WAIT_CYL1;
+        _subState := E_EquipmentModule1State.WAIT_CYL1;
 
-    E_Module1State.WAIT_CYL1:
+    E_EquipmentModule1State.WAIT_CYL1:
         IF iCylinder.IsExtended AND fbAxis1.IsIdle THEN
-            _subState := E_Module1State.EXTEND_CYL2;
+            _subState := E_EquipmentModule1State.EXTEND_CYL2;
         END_IF
 
-    E_Module1State.EXTEND_CYL2:
+    E_EquipmentModule1State.EXTEND_CYL2:
         iCylinder2.Extend();
         fbAxis1.MoveRelative(fDistance := -100.0, fVelocity := 500.0, fAccel := 1000.0, fDecel := 1000.0);
-        _subState := E_Module1State.WAIT_CYL2;
+        _subState := E_EquipmentModule1State.WAIT_CYL2;
 
-    E_Module1State.WAIT_CYL2:
+    E_EquipmentModule1State.WAIT_CYL2:
         IF iCylinder2.IsExtended AND fbAxis1.IsIdle THEN
-            _subState := E_Module1State.RETRACT_ALL;
+            _subState := E_EquipmentModule1State.RETRACT_ALL;
         END_IF
 
-    E_Module1State.RETRACT_ALL:
+    E_EquipmentModule1State.RETRACT_ALL:
         iCylinder.Retract();
         iCylinder2.Retract();
         IF iCylinder.IsRetracted AND iCylinder2.IsRetracted THEN
-            _subState := E_Module1State.COMPLETE;
+            _subState := E_EquipmentModule1State.COMPLETE;
         END_IF
 
-    E_Module1State.COMPLETE:
-        _subState := E_Module1State.EXTEND_CYL1;
+    E_EquipmentModule1State.COMPLETE:
+        _subState := E_EquipmentModule1State.EXTEND_CYL1;
         _state    := E_MachineState.IDLE;  // sequence done — back to IDLE
 END_CASE]]></ST>
       </Implementation>
@@ -233,6 +241,16 @@ fbFaultManager.RegisterFault(fbFaultCyl2Retract);
 fbFaultManager.RegisterFault(fbFaultCyl2SensorConflict);]]></ST>
       </Implementation>
     </Method>
+    <Method Name="RegisterFaults" Id="{07b45c95-80f0-4792-af6c-634ae497f631}">
+      <Declaration><![CDATA[METHOD RegisterFaults
+VAR_INPUT
+	ipManager : I_FaultManager;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ipManager.RegisterFault(fbFaultSequenceTimeout);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Reset" Id="{acae461e-3042-4b0d-a6e0-1f950953dddd}">
       <Declaration><![CDATA[METHOD Reset : BOOL
 ]]></Declaration>
@@ -268,17 +286,6 @@ CASE _state OF
 	E_MachineState.STOPPING:
 		THIS^.ExecuteStop();
 END_CASE]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="SetFaults" Id="{c48e186f-1f83-4457-a871-b56f04de4fac}">
-      <Declaration><![CDATA[METHOD SetFaults
-VAR_INPUT
-	stFaults : ST_EquipmentModuleFaults;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[_ipModuleFaults.ipEquipmentFault1  := stFaults.ipEquipmentFault1;
-]]></ST>
       </Implementation>
     </Method>
   </POU>

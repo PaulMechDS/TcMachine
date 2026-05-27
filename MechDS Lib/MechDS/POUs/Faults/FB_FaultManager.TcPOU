@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
   <POU Name="FB_FaultManager" Id="{4717d332-79fb-48c6-82da-c60198653386}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_FaultManager
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_FaultManager IMPLEMENTS I_FaultManager
 VAR
     _faults : ARRAY[1..32] OF I_Fault;
     _managers : ARRAY[1..8] OF POINTER TO FB_FaultManager;
